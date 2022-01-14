@@ -1,6 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
+import metamask from './metamask.svg';
 import './App.css';
+import { MetaMask } from './MetaMask';
+
 
 function App() {
   return (
@@ -8,16 +11,15 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+            Remaining keys in the store : 180
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <p className='Title-Max-Font'>
+            Connect MetaMask to redeem your keys!
+        </p>
+        <button className='Connect-Button'>
+          <img src={metamask} width={36} height={36} alt="metamask"/>
+            Connect Wallet
+          </button>
       </header>
     </div>
   );
