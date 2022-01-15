@@ -1,0 +1,6 @@
+export default {
+    HAS_LOGIN: 'HAS_LOGIN',
+    GET_NFT_LIST: 'GET_NFT_LIST',
+    LOG_OUT: 'LOG_OUT',
+    GET_TOKEN_AMOUNTS: 'GET_TOKEN_AMOUNTS'
+}
