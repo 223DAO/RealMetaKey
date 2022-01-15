@@ -4,6 +4,10 @@ import metamask from './metamask.svg';
 import './App.css';
 import { MetaMask } from './MetaMask';
 
+const metaMaskClicked = () => {
+  let metaMask = new MetaMask();
+  metaMask.connect()
+}
 
 function App() {
   return (
@@ -17,7 +21,7 @@ function App() {
             Connect MetaMask to redeem your keys!
         </p>
         <button className='Connect-Button'>
-          <img src={metamask} width={36} height={36} alt="metamask"/>
+          <img src={metamask} width={36} height={36} alt="metamask"  onClick={metaMaskClicked}/>
             Connect Wallet
           </button>
       </header>
