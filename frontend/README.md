@@ -1,3 +1,18 @@
+## 开发配置
+
+```bash
+# 安装依赖
+yarn
+
+# 本地运行
+yarn start
+
+# 编译
+yarn build
+```
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
