@@ -4,10 +4,12 @@ pragma solidity ^0.8.0;
 import "./NFT.sol";
 
 struct NFTState {
+    uint256 nftId;
+    string uri;
     uint256 totalKeys;
     uint256 remainingKeys;
-    string uri;
     string[] redeemedKeys;
+    bool canRedeem;
 }
 
 contract KeyStore {
@@ -49,20 +51,21 @@ contract KeyStore {
     function remainingKeys() public view returns (uint256) {}
 
     /**
+     * get all nfts hold by user
+     *
      * can user redeem key?
      * user may have more than one nft
-     * redeem enable may be false
-     * the store may have no keys remaining
-     */
-    function canRedeemKey() public view returns (bool) {}
-
-    /**
-     * get all nfts hold by user
      */
     function getNfts() public view returns (NFTState[] memory nftStates) {}
 
     /**
      * valid nft holder get a new key, and nft state will change
+     *
+     * need to check:
+     * - user is nft owner
+     * - nft state > 0
+     * - redeem enable may be false
+     * - the store may have no keys remaining
      */
     function redeemKey(uint256 nftId)
         public

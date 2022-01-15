@@ -22,7 +22,6 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface KeyStoreInterface extends ethers.utils.Interface {
   functions: {
     "admin()": FunctionFragment;
-    "canRedeemKey()": FunctionFragment;
     "getNfts()": FunctionFragment;
     "getRedeemedKeys()": FunctionFragment;
     "redeemEnable()": FunctionFragment;
@@ -34,10 +33,6 @@ interface KeyStoreInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "canRedeemKey",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "getNfts", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getRedeemedKeys",
@@ -66,10 +61,6 @@ interface KeyStoreInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "canRedeemKey",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getNfts", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getRedeemedKeys",
@@ -140,24 +131,33 @@ export class KeyStore extends BaseContract {
   functions: {
     admin(overrides?: CallOverrides): Promise<[string]>;
 
-    canRedeemKey(overrides?: CallOverrides): Promise<[boolean]>;
-
     getNfts(
       overrides?: CallOverrides
     ): Promise<
       [
-        ([BigNumber, BigNumber, string, string[]] & {
+        ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
+          nftId: BigNumber;
+          uri: string;
           totalKeys: BigNumber;
           remainingKeys: BigNumber;
-          uri: string;
           redeemedKeys: string[];
+          canRedeem: boolean;
         })[]
       ] & {
-        nftStates: ([BigNumber, BigNumber, string, string[]] & {
+        nftStates: ([
+          BigNumber,
+          string,
+          BigNumber,
+          BigNumber,
+          string[],
+          boolean
+        ] & {
+          nftId: BigNumber;
+          uri: string;
           totalKeys: BigNumber;
           remainingKeys: BigNumber;
-          uri: string;
           redeemedKeys: string[];
+          canRedeem: boolean;
         })[];
       }
     >;
@@ -191,16 +191,16 @@ export class KeyStore extends BaseContract {
 
   admin(overrides?: CallOverrides): Promise<string>;
 
-  canRedeemKey(overrides?: CallOverrides): Promise<boolean>;
-
   getNfts(
     overrides?: CallOverrides
   ): Promise<
-    ([BigNumber, BigNumber, string, string[]] & {
+    ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
+      nftId: BigNumber;
+      uri: string;
       totalKeys: BigNumber;
       remainingKeys: BigNumber;
-      uri: string;
       redeemedKeys: string[];
+      canRedeem: boolean;
     })[]
   >;
 
@@ -233,16 +233,16 @@ export class KeyStore extends BaseContract {
   callStatic: {
     admin(overrides?: CallOverrides): Promise<string>;
 
-    canRedeemKey(overrides?: CallOverrides): Promise<boolean>;
-
     getNfts(
       overrides?: CallOverrides
     ): Promise<
-      ([BigNumber, BigNumber, string, string[]] & {
+      ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
+        nftId: BigNumber;
+        uri: string;
         totalKeys: BigNumber;
         remainingKeys: BigNumber;
-        uri: string;
         redeemedKeys: string[];
+        canRedeem: boolean;
       })[]
     >;
 
@@ -256,19 +256,30 @@ export class KeyStore extends BaseContract {
     ): Promise<
       [
         string,
-        [BigNumber, BigNumber, string, string[]] & {
+        [BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
+          nftId: BigNumber;
+          uri: string;
           totalKeys: BigNumber;
           remainingKeys: BigNumber;
-          uri: string;
           redeemedKeys: string[];
+          canRedeem: boolean;
         }
       ] & {
         key: string;
-        nftState: [BigNumber, BigNumber, string, string[]] & {
+        nftState: [
+          BigNumber,
+          string,
+          BigNumber,
+          BigNumber,
+          string[],
+          boolean
+        ] & {
+          nftId: BigNumber;
+          uri: string;
           totalKeys: BigNumber;
           remainingKeys: BigNumber;
-          uri: string;
           redeemedKeys: string[];
+          canRedeem: boolean;
         };
       }
     >;
@@ -286,8 +297,6 @@ export class KeyStore extends BaseContract {
 
   estimateGas: {
     admin(overrides?: CallOverrides): Promise<BigNumber>;
-
-    canRedeemKey(overrides?: CallOverrides): Promise<BigNumber>;
 
     getNfts(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -320,8 +329,6 @@ export class KeyStore extends BaseContract {
 
   populateTransaction: {
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    canRedeemKey(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getNfts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
