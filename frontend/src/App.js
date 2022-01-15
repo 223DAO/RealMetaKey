@@ -1,30 +1,28 @@
 import { useSelector } from "react-redux";
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import Header  from "./components/header";
 import Home from './pages/home/home';
 import Granted from './pages/granted/granted';
 import Redeem from './pages/redeem/redeem';
 
 
 function App() {
-  const { hasLogin } = useSelector((state) => state.auth);
-
   return (
     <Router>
-      { hasLogin ?
-        <div className="App_main">
+      <div className="App__main">
+					<Header/>
+					<div className="App__body">
             <Routes>
-              <Route path="/" element={<Granted />} />
-              <Route path="/granted" element={<Granted />} />
-              <Route path="/redeem" element={<Redeem />} />
+              <Route exact path="/home" element={<Home/>}>
+              </Route>
+              <Route exact path="/grant" element={<Granted/>}>
+              </Route>
+              <Route exact path="/redeem" element={<Redeem/>}>
+              </Route>
             </Routes>
-        </div>
-        :
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Navigate to={"/"} />
-        </Routes>
-      }
+          </div>
+      </div>
     </Router>
   );
 }

@@ -1,7 +1,3 @@
-
-import { useDispatch } from "react-redux";
-import { signIn } from './redux/actions/auth';
-
 // supress ts warnings for window.ethereum
 declare let window: any;
 
@@ -103,13 +99,6 @@ export class MetaMask {
    */
   private _handleMetaMaskAccounts(accounts: string[]) {
     this.account = accounts && accounts[0] || undefined;
-
-    const dispatch = useDispatch();
-    const address = accounts[0];
-
-    if (Array.isArray(accounts) && accounts.length) {
-      dispatch(signIn(true, address));
-    }
 
     if (!this.account) {
       console.warn('user disconnected account or read account failed');
