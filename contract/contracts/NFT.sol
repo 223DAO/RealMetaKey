@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@zoralabs/core/dist/contracts/ERC721.sol";
 
 struct NFTState {
-    uint256 nftId;
+    uint256 tokenId;
     string uri;
     uint256 totalKeys;
     uint256 remainingKeys;
@@ -23,12 +23,12 @@ contract NFT is ERC721 {
     mapping(uint256 => uint256) private _nftRemainingKeys;
 
     modifier onlyAdmin() {
-        require(msg.sender == admin, "only admin can call");
+        require(msg.sender == admin, "Only admin can call");
         _;
     }
 
     modifier onlyKeyStore() {
-        require(msg.sender == keyStore, "only KeyStore contract can call");
+        require(msg.sender == keyStore, "Only KeyStore contract can call");
         _;
     }
 
@@ -67,7 +67,7 @@ contract NFT is ERC721 {
     function getState(uint256 _tokenId) public view returns (NFTState memory) {
         require(_tokenId <= _tokenIds.current(), "Token doesn't exist");
         NFTState memory nftState = new NFTState();
-        nftState.nftId = _tokenId;
+        nftState.tokenId = _tokenId;
         nftState.uri = ERC721URIStorage.tokenURI(_tokenId);
         nftState.totalKeys = _nftTotalKeys[_tokenId];
         nftState.remainingKeys = _nftRemainingKeys[_tokenId];
