@@ -23,7 +23,6 @@ interface KeyStoreInterface extends ethers.utils.Interface {
   functions: {
     "admin()": FunctionFragment;
     "getNfts()": FunctionFragment;
-    "getRedeemedKeys()": FunctionFragment;
     "redeemEnable()": FunctionFragment;
     "redeemKey(uint256)": FunctionFragment;
     "remainingKeys()": FunctionFragment;
@@ -34,10 +33,6 @@ interface KeyStoreInterface extends ethers.utils.Interface {
 
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
   encodeFunctionData(functionFragment: "getNfts", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "getRedeemedKeys",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "redeemEnable",
     values?: undefined
@@ -62,10 +57,6 @@ interface KeyStoreInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNfts", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getRedeemedKeys",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "redeemEnable",
     data: BytesLike
@@ -162,8 +153,6 @@ export class KeyStore extends BaseContract {
       }
     >;
 
-    getRedeemedKeys(overrides?: CallOverrides): Promise<[string[]]>;
-
     redeemEnable(overrides?: CallOverrides): Promise<[boolean]>;
 
     redeemKey(
@@ -204,8 +193,6 @@ export class KeyStore extends BaseContract {
     })[]
   >;
 
-  getRedeemedKeys(overrides?: CallOverrides): Promise<string[]>;
-
   redeemEnable(overrides?: CallOverrides): Promise<boolean>;
 
   redeemKey(
@@ -245,8 +232,6 @@ export class KeyStore extends BaseContract {
         canRedeem: boolean;
       })[]
     >;
-
-    getRedeemedKeys(overrides?: CallOverrides): Promise<string[]>;
 
     redeemEnable(overrides?: CallOverrides): Promise<boolean>;
 
@@ -300,8 +285,6 @@ export class KeyStore extends BaseContract {
 
     getNfts(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getRedeemedKeys(overrides?: CallOverrides): Promise<BigNumber>;
-
     redeemEnable(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemKey(
@@ -331,8 +314,6 @@ export class KeyStore extends BaseContract {
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getNfts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getRedeemedKeys(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeemEnable(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

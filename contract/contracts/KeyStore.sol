@@ -71,9 +71,4 @@ contract KeyStore {
         public
         returns (string memory key, NFTState memory nftState)
     {}
-
-    /**
-     * nft holder get redeemed keys
-     */
-    function getRedeemedKeys() public view returns (string[] memory) {}
 }
