@@ -51,6 +51,21 @@
     justify-content: center;
     background-color: #ffffff;
   }
+
+  .Single-NFT {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .Single-NFT-Act {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
   
   .App-link {
     color: #61dafb;

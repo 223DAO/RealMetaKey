@@ -3,6 +3,7 @@ import './redeem.css';
 import zora from '../../assets/zora.png';
 import opensea from '../../assets/opensea.png';
 
+//todo : remove Test
 var nftList = ['../../assets/zora.png', '../../assets/zora.png'];
 
 const zoraClicked = () => {
@@ -11,6 +12,34 @@ const zoraClicked = () => {
 
 const openseaClicked = () => {
     window.open("https://opensea.io/");
+}
+
+const singleNft = () => {
+    const src = logo
+    //todo : fix NaN
+    return (
+        <div className="Single-NFT">
+            <img src={src} width={74} height={74} className="App-logo" alt="logo" />
+            <div className="Single-NFT-Act">
+            <p>
+              key : askdjsakdh
+            </p>
+            <div className="Single-NFT">
+            <button className='Connect-Button'>
+                <img src={zora} width={36} height={36} alt="zora" onClick={zoraClicked} />
+                Zora
+            </button>
+            <button className='Connect-Button'>
+                <img src={opensea} width={36} height={36} alt="opensea" onClick={openseaClicked} />
+                Opensea
+            </button>
+            <button className='Connect-Button' onClick={NaN}>
+                Redeem
+            </button>
+            </div>
+            </div>
+        </div>
+    );
 }
 
 function UnLoginRedeem() {
@@ -33,23 +62,12 @@ function LoginRedeem() {
             <p className='Title-Max-Font'>
                 Remaining keys in the store: 180
             </p>
-            <div className="Login-content">
-                <button className='Connect-Button'>
-                    <img src={zora} width={36} height={36} alt="zora" onClick={zoraClicked} />
-                    <p className='Title-Max-Font'>
-                        Zora
-                    </p>
-                </button>
-                <button className='Connect-Button'>
-                    <img src={opensea} width={36} height={36} alt="opensea" onClick={openseaClicked} />
-                    <p className='Title-Max-Font'>
-                        Opensea
-                    </p>
-                </button>
-                <button className='Connect-Button' onClick={zoraClicked}>
-                    Redeem
-                </button>
-            </div>
+            {nftList.length ?
+                nftList.map(singleNft) :
+                <p className='Title-Max-Font'>
+                    You don't have any NFT.
+                </p>}
+
         </div>
     );
 }
