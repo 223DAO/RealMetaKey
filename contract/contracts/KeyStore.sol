@@ -52,9 +52,6 @@ contract KeyStore {
 
     /**
      * get all nfts hold by user
-     *
-     * can user redeem key?
-     * user may have more than one nft
      */
     function getNfts() public view returns (NFTState[] memory nftStates) {}
 
@@ -64,8 +61,8 @@ contract KeyStore {
      * need to check:
      * - user is nft owner
      * - nft state > 0
-     * - redeem enable may be false
-     * - the store may have no keys remaining
+     * - redeem enable
+     * - the store have keys remaining
      */
     function redeemKey(uint256 nftId)
         public
