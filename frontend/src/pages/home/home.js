@@ -13,9 +13,6 @@ function Home() {
     return (
         <div className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
-            <p>
-                Remaining keys in the store : 180
-            </p>
             <p className='Title-Max-Font'>
                 Connect MetaMask to redeem your keys!
             </p>
