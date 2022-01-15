@@ -11,9 +11,9 @@ const openseaClicked = () => {
 
 function Redeem() {
     return (
-        <div className="redeem">
+        <div className="Redeem">
             <p className='Title-Max-Font'>
-                Connect MetaMask to redeem your keys!
+                Remaining keys in the store: 180
             </p>
             <button className='Connect-Button'>
             <img src={zora} width={36} height={36} alt="zora"  onClick={zoraClicked}/>
