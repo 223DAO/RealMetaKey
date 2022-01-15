@@ -39,8 +39,8 @@ contract KeyStore {
         admin = _admin;
     }
 
-    function setRedeemEnable(bool enable) public onlyAdmin {
-        redeemEnable = enable;
+    function setRedeemEnable(bool _enable) public onlyAdmin {
+        redeemEnable = _enable;
     }
 
     /**
@@ -65,8 +65,8 @@ contract KeyStore {
         if (_tokenStates.length == 0) {
             return _tokenStates;
         }
-        uint256 i;
 
+        uint256 i;
         for (i=0;i<_tokenStates.length;i++){
             //Update redeemed keys
             _tokenStates[i].redeemedKeys = _redeemedKeys[_tokenStates[i].tokenId];
@@ -84,8 +84,8 @@ contract KeyStore {
      * - the store have keys remaining
      * - token has remaining keys to redeem
      */
-    function canRedeem(uint remaining) private returns (bool) {
-        return (remaining > 0) && redeemEnable && (_keys.length > 0);
+    function canRedeem(uint _remaining) private returns (bool) {
+        return (_remaining > 0) && redeemEnable && (_keys.length > 0);
     }
 
     /**
@@ -97,11 +97,11 @@ contract KeyStore {
      * - redeem enable
      * - the store have keys remaining
      */
-    function redeemKey(uint256 tokenId)
+    function redeemKey(uint256 _tokenId)
         public
         returns (string memory key, NFTState memory nftState)
     {
-        address owner = nftContract.ownerOf(tokenId);
+        address owner = nftContract.ownerOf(_tokenId);
         require(msg.sender == owner, "Only owner can redeem");
         require(redeemEnable, "Redemption disabled now");
         require(_keys.length > 0, "No more keys in store");
@@ -112,12 +112,12 @@ contract KeyStore {
         string memory _key = _keys[_keys.length - 1];
         _keys.pop();
         //Update _redeemedKeys
-        _redeemedKeys[tokenId].push(_key);
+        _redeemedKeys[_tokenId].push(_key);
 
         //Get new token state
-        NFTState memory _tokenState = nftContract.getState(tokenId);
+        NFTState memory _tokenState = nftContract.getState(_tokenId);
         //Update token redeemed keys
-        _tokenState.redeemedKeys = _redeemedKeys[tokenId];
+        _tokenState.redeemedKeys = _redeemedKeys[_tokenId];
         //Update token canRedeem
         _tokenState.canRedeem = canRedeem(_tokenState.remainingKeys);
 

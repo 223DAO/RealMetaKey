@@ -40,8 +40,8 @@ contract NFT is ERC721 {
     function mint(address _to, uint256 _totalKeys) external onlyAdmin {
         _tokenIds.increment();
         uint256 _tokenId = _tokenIds.current();
-        string _uri = uriForKeyCondition(_totalKeys, _totalKeys);
-        super._safeMint(_to, _tokenId);
+        string memory _uri = uriForKeyCondition(_totalKeys, _totalKeys);
+        ERC721._safeMint(_to, _tokenId);
         super._setTokenUri(_tokenId, _uri);
         _nftTotalKeys[_tokenId] = _totalKeys;
         _nftRemainingKeys[_tokenId] = _totalKeys;
@@ -99,14 +99,14 @@ contract NFT is ERC721 {
         uint256 newRemaining = _nftRemainingKeys[_tokenId] - 1;
         _nftRemainingKeys[_tokenId] = newRemaining;
         //Update uri according to new remaining key count
-        string _uri = uriForKeyCondition(_totalKeys, newRemaining);
-        super._setTokenUri(_tokenId, _uri);
+        string memory _uri = uriForKeyCondition(_totalKeys, newRemaining);
+        super._setTokenURI(_tokenId, _uri);
     }
 
     /**
      * Get URI for token according to total key count and remaining key count
      */
-    function uriForKeyCondition(uint256 _total, uint256 _remaining) private returns (string) {
+    function uriForKeyCondition(uint256 _total, uint256 _remaining) private returns (string memory) {
         //Possible values for _total are 1 and 6
         uint256 id = 10*_total + _remaining;
         if (id == 11) {
