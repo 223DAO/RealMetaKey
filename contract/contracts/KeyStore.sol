@@ -22,6 +22,9 @@ contract KeyStore {
 
     NFT immutable nftContract;
 
+    string[] private _keys;
+    mapping(uint256 => string[]) private _redeemedKeys;
+
     modifier onlyAdmin() {
         require(msg.sender == admin, "only admin can call");
         _;
@@ -43,17 +46,27 @@ contract KeyStore {
     /**
      * Admin can supply keys to the contract before nft holders can redeem.
      */
-    function supplyKeys(string[] calldata keys) public onlyAdmin {}
+    function supplyKeys(string[] calldata keys) public onlyAdmin {
+        _keys = keys;
+    }
 
     /**
      * how many keys remaining in the store
      */
-    function remainingKeys() public view returns (uint256) {}
+    function remainingKeys() public view returns (uint256) {
+        return _keys.length;
+    }
 
     /**
      * get all nfts hold by user
      */
-    function getNfts() public view returns (NFTState[] memory nftStates) {}
+    function getNfts() public view returns (NFTState[] memory nftStates) {
+        NFTState[] memory _tokenStates = _nftContract.getStates(msg.sender);
+    }
+
+    function canRedeem(NFTState state) private returns (bool) {
+        
+    }
 
     /**
      * valid nft holder get a new key, and nft state will change

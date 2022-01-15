@@ -90,9 +90,9 @@ contract NFT is ERC721 {
     }
 
     /**
-     * Update remaining key count and uri after key redemption
+     * Update remaining key count and uri for key redemption
      */
-    function redeemedKey(uint256 _tokenId) external onlyKeyStore {
+    function redeemKey(uint256 _tokenId) external onlyKeyStore {
         require(_tokenId <= _tokenIds.current(), "Token doesn't exist");
         require(_nftRemainingKeys[_tokenId] > 0, "No available keys to redeem");
         //Update remaining key count
