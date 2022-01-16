@@ -9,7 +9,7 @@ import { metamask } from "./MetaMask";
 declare let window: any;
 
 const ABI = require('./KeyStoreABI.json')
-const ADDRESS = '0xB691488b14AabE6C6cF46C8BB486DCF06d87d020' // TODO
+const ADDRESS = '0xD69E36Af999Dc3eAa4b1264d05d2c97ca2e1618F' // TODO
 
 export interface NftData {
   tokenId: BigNumber;
