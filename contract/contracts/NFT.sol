@@ -130,7 +130,7 @@ contract NFT is ERC721Enumerable {
     }
 
     function _tokenState(uint256 tokenId) private view returns (uint64) {
-        return (uint32(total[tokenId]) << 16) | remaining[tokenId];
+        return _state(total[tokenId], remaining[tokenId]);
     }
 
     function _state(uint32 total_, uint32 remaining_)
