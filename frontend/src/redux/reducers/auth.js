@@ -1,22 +1,18 @@
 import types from '../actions/actionTypes';
 
 let defaultState = {
-  	hasLogin: false,
-	walletAddress: ''
+  walletAddress: ''
 }
 
 const authCheck = (state = defaultState, action) => {
-	switch (action.type) {
-		case types.HAS_LOGIN:
-			const { hasLogin, walletAddress } = action;
+  switch (action.type) {
+    case types.METAMASK_ACCOUNT:
+      const { walletAddress } = action;
+      return Object.assign({}, state, { walletAddress });
 
-			return Object.assign({}, state, { hasLogin, walletAddress });
-		case types.LOG_OUT:
-
-			return Object.assign({}, state, action);
-		default:
-			return state;
-	}
+    default:
+      return state;
+  }
 }
 
 export default authCheck;

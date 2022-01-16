@@ -1,3 +1,6 @@
+import events from "events";
+import { EventEmitter } from "stream";
+
 // supress ts warnings for window.ethereum
 declare let window: any;
 
@@ -31,13 +34,23 @@ export class MetaMask {
 
   account: string | undefined = undefined
   listener: AccountChangeListener | undefined
+  eventEmitter: EventEmitter
 
   constructor() {
+    this.eventEmitter = new events.EventEmitter()
     this._handleMetaMaskAccounts = this._handleMetaMaskAccounts.bind(this)
   }
 
-  setAccountChangeListener(listener: AccountChangeListener) {
-    this.listener = listener
+  /**
+   * event: 'connect', 'account'
+   * listener: function(account) {}
+   */
+  addListener(event: string, listener: (account: string) => void) {
+    this.eventEmitter.addListener(event, listener)
+  }
+
+  removeListener(event: string, listener: (account: string) => void) {
+    this.eventEmitter.removeListener(event, listener)
   }
 
   hasInstalled() {
@@ -62,6 +75,7 @@ export class MetaMask {
         if (!this.account) {
           throw Error('Connect MetaMask failed')
         }
+        this.eventEmitter.emit('connect', this.account)
         return this.account
       } catch (e) {
         console.error('MetaMask read account failed', e)
@@ -98,16 +112,18 @@ export class MetaMask {
    * this method will be called when connect or switch account in MetaMask
    */
   private _handleMetaMaskAccounts(accounts: string[]) {
-    this.account = accounts && accounts[0] || undefined;
+    const newAccount = accounts && accounts[0] || undefined;
 
-    if (!this.account) {
+    if (!newAccount) {
       console.warn('user disconnected account or read account failed');
     }
 
-    if (this.listener) {
-      this.listener.onAccountChanged(this.account);
+    if (newAccount !== this.account) {
+      this.account = newAccount
+      this.eventEmitter.emit('account', newAccount)
     }
-
-    return this.account;
+    return newAccount
   }
 }
+
+export const metamask = new MetaMask()

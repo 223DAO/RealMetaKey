@@ -3,44 +3,37 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "antd";
 import { NavLink } from "react-router-dom";
 
-import { signIn, logOut } from '../redux/actions/auth';
+import { metamaskAccount } from '../redux/actions/auth';
+import { metamask } from "../utils/MetaMask";
 
 function Header() {
     const dispatch = useDispatch();
     const { walletAddress } = useSelector((state) => state.auth);
-    const { ethereum } = window;
 
-    const handleLogOut = () => {
-        dispatch(logOut(false, null));
+    function handleAccount(account) {
+        console.log('account changed', account)
+        dispatch(metamaskAccount(account))
     }
 
-    if (typeof ethereum !== 'undefined') {
-        ethereum.on('disconnect', () => {
-            console.log(111);
-            handleLogOut();
-        });
-    
-        ethereum.on('connect', () => {
-            dispatch(signIn(true, walletAddress));
-        });
-    
-        ethereum.on('accountsChanged', () => {
-            dispatch(signIn(true, walletAddress));
-        });    
+    useEffect(() => {
+        metamask.addListener('account', handleAccount)
+
+        return function () {
+            metamask.removeListener('account', handleAccount)
+            metamask.disconnect()
+        };
+    })
+
+    function ellipsizeAddress(account) {
+        return account.substr(0, 5) + '...' + account.substr(account.length - 5, 5)
     }
 
-    const connectMetaMask = async () => {
-        if (typeof ethereum !== 'undefined') {
-            const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
-            const address = accounts[0];
-
-            if (Array.isArray(accounts) && accounts.length) {
-                dispatch(signIn(true, address));
-            }
-        }
+    function onConnectClick() {
+        console.log('connect click')
+        metamask.connect().then(console.log)
     }
 
-    return(
+    return (
         <div className="App__header">
             <div className="App__header-links">
                 <NavLink className={(navData) => (navData.isActive ? "App__header-link-active" : 'none')} className="App__header-link-wrapper" to="/home">
@@ -59,9 +52,9 @@ function Header() {
             <div className="App__header-login-button">
                 {
                     walletAddress ?
-                        <span>{walletAddress}</span>
-                        : <Button type="primary" onClick={connectMetaMask}>Connect Wallet</Button>
-                    }
+                        <span>{ellipsizeAddress(walletAddress)}</span>
+                        : <Button type="primary" onClick={onConnectClick}>Connect Wallet</Button>
+                }
             </div>
         </div>
     );
