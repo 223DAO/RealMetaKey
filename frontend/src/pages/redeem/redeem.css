@@ -16,5 +16,12 @@
 
 .App-redeem-page_nft-redeem-key {
   font-weight: bold;
+  text-align: left;
   word-break: break-all;
+}
+
+.App-redeem-page_tips,
+.App-redeem-page_no-nfts {
+  margin-top: 80px;
+  font-size: 32px;
 }

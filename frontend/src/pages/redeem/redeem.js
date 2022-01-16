@@ -4,46 +4,48 @@ import { Card, Avatar, Button } from 'antd';
 
 import './redeem.css';
 
-import logo from '../../assets/logo.svg';
 import zora from '../../assets/zora.png';
 import opensea from '../../assets/opensea.png';
-import eye from '../../assets/eye.png';
-import noEye from '../../assets/noEye.png';
 import nftImage from '../../assets/nftImage.png';
 import { contract } from "../../utils/Contract";
 
-const nftLists = [
-    {
-        image: nftImage,
-        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
-        redeemedCount: 2,
-        total: 6,
-    },
-    {
-        image: nftImage,
-        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
-        redeemedCount: 2,
-        total: 6,
-    },
-    {
-        image: nftImage,
-        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
-        redeemedCount: 2,
-        total: 6,
-    },
-    {
-        image: nftImage,
-        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
-        redeemedCount: 2,
-        total: 6,
-    },
-    {
-        image: nftImage,
-        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
-        redeemedCount: 2,
-        total: 6,
-    }
-];
+// const nftLists = [
+//     {
+//         tokenId: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+//         url: nftImage,
+//         redeemedKeys: ['0x714779977aBFa568b426ceECCef5b0480A3fFDFD','0x714779977aBFa568b426ceECCef5b0480A3fFDFD'],
+//         totalKeys: 6,
+//         canRedeem: 2,
+//     },
+//     {
+//         tokenId: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+//         url: nftImage,
+//         redeemedKeys: ['0x714779977aBFa568b426ceECCef5b0480A3fFDFD'],
+//         totalKeys: 6,
+//         canRedeem: 0,
+//     },
+//     {
+//         tokenId: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+//         url: nftImage,
+//         redeemedKeys: ['0x714779977aBFa568b426ceECCef5b0480A3fFDFD'],
+//         totalKeys: 6,
+//         canRedeem: 2,
+//     },
+//     {
+//         tokenId: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+//         url: nftImage,
+//         redeemedKeys: ['0x714779977aBFa568b426ceECCef5b0480A3fFDFD'],
+//         totalKeys: 6,
+//         canRedeem: 2,
+//     },
+//     {
+//         tokenId: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+//         url: nftImage,
+//         redeemedKeys: ['0x714779977aBFa568b426ceECCef5b0480A3fFDFD'],
+//         totalKeys: 6,
+//         canRedeem: 2,
+//     },
+// ];
 
 const zoraClicked = () => {
     window.open("https://zora.co/");
@@ -61,29 +63,42 @@ const itemDom = (item, index) => {
             style={{ width: 300 }}
             cover={
             <img
-                src={item.image}
+                src={item.url}
             />
             }
             actions={[
-                <Button>Redeem</Button>,
+                <Button type="primary" disabled={!item.canRedeem}>Redeem{item.canRedeem}/{item.totalKeys}</Button>,
                 <Avatar src={opensea} onClick={openseaClicked} />,
                 <Avatar src={zora} onClick={zoraClicked} />,
             ]}
         >
-            <span className="App-redeem-page_nft-redeem-key">{item.hasRedeemedKey}</span>
+            <span className="App-redeem-page_nft-redeem-key">
+                {item.redeemedKeys.join(',')}
+            </span>
         </Card>
     );
 }
 
+const noNftTips = () => {
+    return (
+        <div className="App-redeem-page_no-nfts">
+            You don't have any NFT
+        </div>
+    );
+}
+
 function Redeem() {
+    const [nftLists, setNftLists] = useState([]);
 
     useEffect(() => {
       // Test call contract
       console.log('nft load')
-        contract.getNftIds().then((r) => {
-          console.log('nft data', r)
+        contract.getNftIds().then((data) => {
+          console.log('nft data', data);
+
+          setNftLists(data);
         })
-    })
+    }, []);
 
     let { walletAddress } = useSelector((state) => state.auth);
 
@@ -93,7 +108,12 @@ function Redeem() {
                 walletAddress ?
                 (
                     <div className="App-redeem-page_nfts">
-                        {nftLists.map((item, index) => itemDom(item, index))}
+                        {
+                            !!nftLists.length ?
+                                nftLists.map((item, index) => itemDom(item, index))
+                                : noNftTips()
+                        }
+                        
                     </div>
                 )
                 : (
