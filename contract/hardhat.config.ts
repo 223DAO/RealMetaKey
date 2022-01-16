@@ -7,6 +7,7 @@ import './tasks/addUrisForNFT'
 import './tasks/checkNFTData'
 import './tasks/getNftIds'
 import './tasks/grantNFT'
+import './tasks/supplyKeys'
 
 // admin account for test deploy on goerli
 let adminPrivateKeyTest = ''
