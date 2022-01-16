@@ -80,7 +80,7 @@ function Redeem() {
     return(
         <div className="App-redeem-page">
             {
-                walletAddress ? 
+                walletAddress ?
                 (
                     <div className="App-redeem-page_nfts">
                         {nftLists.map((item, index) => itemDom(item, index))}

@@ -21,8 +21,12 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface KeyStoreInterface extends ethers.utils.Interface {
   functions: {
+    "TYPE_PREMIUM()": FunctionFragment;
+    "TYPE_STANDRAD()": FunctionFragment;
     "admin()": FunctionFragment;
-    "getNfts()": FunctionFragment;
+    "getNftIds()": FunctionFragment;
+    "grantNft(address,uint32,uint8)": FunctionFragment;
+    "nftData(uint256)": FunctionFragment;
     "redeemEnable()": FunctionFragment;
     "redeemKey(uint256)": FunctionFragment;
     "remainingKeys()": FunctionFragment;
@@ -31,8 +35,24 @@ interface KeyStoreInterface extends ethers.utils.Interface {
     "supplyKeys(string[])": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "TYPE_PREMIUM",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "TYPE_STANDRAD",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "admin", values?: undefined): string;
-  encodeFunctionData(functionFragment: "getNfts", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getNftIds", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "grantNft",
+    values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nftData",
+    values: [BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "redeemEnable",
     values?: undefined
@@ -55,8 +75,18 @@ interface KeyStoreInterface extends ethers.utils.Interface {
     values: [string[]]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "TYPE_PREMIUM",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "TYPE_STANDRAD",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "admin", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "getNfts", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getNftIds", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "grantNft", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "nftData", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "redeemEnable",
     data: BytesLike
@@ -120,43 +150,41 @@ export class KeyStore extends BaseContract {
   interface: KeyStoreInterface;
 
   functions: {
+    TYPE_PREMIUM(overrides?: CallOverrides): Promise<[number]>;
+
+    TYPE_STANDRAD(overrides?: CallOverrides): Promise<[number]>;
+
     admin(overrides?: CallOverrides): Promise<[string]>;
 
-    getNfts(
+    getNftIds(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+
+    grantNft(
+      _receiver: string,
+      type_: BigNumberish,
+      _number: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    nftData(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
       [
-        ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
-          nftId: BigNumber;
+        [BigNumber, string, number, number, string[], boolean] & {
+          tokenId: BigNumber;
           uri: string;
-          totalKeys: BigNumber;
-          remainingKeys: BigNumber;
+          totalKeys: number;
+          remainingKeys: number;
           redeemedKeys: string[];
           canRedeem: boolean;
-        })[]
-      ] & {
-        nftStates: ([
-          BigNumber,
-          string,
-          BigNumber,
-          BigNumber,
-          string[],
-          boolean
-        ] & {
-          nftId: BigNumber;
-          uri: string;
-          totalKeys: BigNumber;
-          remainingKeys: BigNumber;
-          redeemedKeys: string[];
-          canRedeem: boolean;
-        })[];
-      }
+        }
+      ]
     >;
 
     redeemEnable(overrides?: CallOverrides): Promise<[boolean]>;
 
     redeemKey(
-      nftId: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -168,7 +196,7 @@ export class KeyStore extends BaseContract {
     ): Promise<ContractTransaction>;
 
     setRedeemEnable(
-      enable: boolean,
+      _enable: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -178,25 +206,39 @@ export class KeyStore extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  TYPE_PREMIUM(overrides?: CallOverrides): Promise<number>;
+
+  TYPE_STANDRAD(overrides?: CallOverrides): Promise<number>;
+
   admin(overrides?: CallOverrides): Promise<string>;
 
-  getNfts(
+  getNftIds(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+  grantNft(
+    _receiver: string,
+    type_: BigNumberish,
+    _number: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  nftData(
+    _tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<
-    ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
-      nftId: BigNumber;
+    [BigNumber, string, number, number, string[], boolean] & {
+      tokenId: BigNumber;
       uri: string;
-      totalKeys: BigNumber;
-      remainingKeys: BigNumber;
+      totalKeys: number;
+      remainingKeys: number;
       redeemedKeys: string[];
       canRedeem: boolean;
-    })[]
+    }
   >;
 
   redeemEnable(overrides?: CallOverrides): Promise<boolean>;
 
   redeemKey(
-    nftId: BigNumberish,
+    _tokenId: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -208,7 +250,7 @@ export class KeyStore extends BaseContract {
   ): Promise<ContractTransaction>;
 
   setRedeemEnable(
-    enable: boolean,
+    _enable: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -218,62 +260,44 @@ export class KeyStore extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    TYPE_PREMIUM(overrides?: CallOverrides): Promise<number>;
+
+    TYPE_STANDRAD(overrides?: CallOverrides): Promise<number>;
+
     admin(overrides?: CallOverrides): Promise<string>;
 
-    getNfts(
+    getNftIds(overrides?: CallOverrides): Promise<BigNumber[]>;
+
+    grantNft(
+      _receiver: string,
+      type_: BigNumberish,
+      _number: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    nftData(
+      _tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<
-      ([BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
-        nftId: BigNumber;
+      [BigNumber, string, number, number, string[], boolean] & {
+        tokenId: BigNumber;
         uri: string;
-        totalKeys: BigNumber;
-        remainingKeys: BigNumber;
+        totalKeys: number;
+        remainingKeys: number;
         redeemedKeys: string[];
         canRedeem: boolean;
-      })[]
+      }
     >;
 
     redeemEnable(overrides?: CallOverrides): Promise<boolean>;
 
-    redeemKey(
-      nftId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<
-      [
-        string,
-        [BigNumber, string, BigNumber, BigNumber, string[], boolean] & {
-          nftId: BigNumber;
-          uri: string;
-          totalKeys: BigNumber;
-          remainingKeys: BigNumber;
-          redeemedKeys: string[];
-          canRedeem: boolean;
-        }
-      ] & {
-        key: string;
-        nftState: [
-          BigNumber,
-          string,
-          BigNumber,
-          BigNumber,
-          string[],
-          boolean
-        ] & {
-          nftId: BigNumber;
-          uri: string;
-          totalKeys: BigNumber;
-          remainingKeys: BigNumber;
-          redeemedKeys: string[];
-          canRedeem: boolean;
-        };
-      }
-    >;
+    redeemKey(_tokenId: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
     remainingKeys(overrides?: CallOverrides): Promise<BigNumber>;
 
     setAdmin(_admin: string, overrides?: CallOverrides): Promise<void>;
 
-    setRedeemEnable(enable: boolean, overrides?: CallOverrides): Promise<void>;
+    setRedeemEnable(_enable: boolean, overrides?: CallOverrides): Promise<void>;
 
     supplyKeys(keys: string[], overrides?: CallOverrides): Promise<void>;
   };
@@ -281,14 +305,30 @@ export class KeyStore extends BaseContract {
   filters: {};
 
   estimateGas: {
+    TYPE_PREMIUM(overrides?: CallOverrides): Promise<BigNumber>;
+
+    TYPE_STANDRAD(overrides?: CallOverrides): Promise<BigNumber>;
+
     admin(overrides?: CallOverrides): Promise<BigNumber>;
 
-    getNfts(overrides?: CallOverrides): Promise<BigNumber>;
+    getNftIds(overrides?: CallOverrides): Promise<BigNumber>;
+
+    grantNft(
+      _receiver: string,
+      type_: BigNumberish,
+      _number: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    nftData(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     redeemEnable(overrides?: CallOverrides): Promise<BigNumber>;
 
     redeemKey(
-      nftId: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -300,7 +340,7 @@ export class KeyStore extends BaseContract {
     ): Promise<BigNumber>;
 
     setRedeemEnable(
-      enable: boolean,
+      _enable: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -311,14 +351,30 @@ export class KeyStore extends BaseContract {
   };
 
   populateTransaction: {
+    TYPE_PREMIUM(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    TYPE_STANDRAD(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     admin(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    getNfts(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getNftIds(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    grantNft(
+      _receiver: string,
+      type_: BigNumberish,
+      _number: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    nftData(
+      _tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     redeemEnable(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     redeemKey(
-      nftId: BigNumberish,
+      _tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -330,7 +386,7 @@ export class KeyStore extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     setRedeemEnable(
-      enable: boolean,
+      _enable: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -6,19 +6,22 @@ import { KeyStore } from "../types";
 // supress ts warnings for window.ethereum
 declare let window: any;
 
+const ABI = require('./KeyStoreABI.json')
+const ADDRESS = '' // TODO
+
 export class Contract {
 
   provider: Web3Provider | undefined
   keyStore: KeyStore
 
   constructor() {
-    // TODO
+    // TODO connect
     this.provider = new ethers.providers.Web3Provider(window.ethereum)
-    this.keyStore = new ethers.Contract('address', 'abi', this.provider.getSigner()) as KeyStore
+    this.keyStore = new ethers.Contract(ADDRESS, ABI, this.provider.getSigner()) as KeyStore
   }
 
-  getNfts() {
-    return this.keyStore.getNfts()
+  getNftData(nftId: BigNumberish) {
+    return this.keyStore.nftData(nftId)
   }
 
   redeemKey(nftId: BigNumberish) {
