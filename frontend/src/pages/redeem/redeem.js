@@ -8,6 +8,7 @@ import zora from '../../assets/zora.png';
 import opensea from '../../assets/opensea.png';
 import nftImage from '../../assets/nftImage.png';
 import { Contract } from "../../utils/Contract";
+import { metamask } from "../../utils/MetaMask";
 
 // const nftLists = [
 //     {
@@ -55,30 +56,6 @@ const openseaClicked = () => {
     window.open("https://testnets.opensea.io/collection/realmetakey");
 }
 
-const itemDom = (item, index) => {
-    return (
-        <Card
-            key={index}
-            className="App-redeem-page_nft"
-            style={{ width: 300 }}
-            cover={
-                <img
-                    src={item.url}
-                />
-            }
-            actions={[
-                <Button type="primary" disabled={!item.canRedeem}>Redeem{item.canRedeem}/{item.totalKeys}</Button>,
-                <Avatar src={opensea} onClick={openseaClicked} />,
-                <Avatar src={zora} onClick={zoraClicked} />,
-            ]}
-        >
-            <span className="App-redeem-page_nft-redeem-key">
-                {item.redeemedKeys.join(',')}
-            </span>
-        </Card>
-    );
-}
-
 const noNftTips = () => {
     return (
         <div className="App-redeem-page_no-nfts">
@@ -88,53 +65,97 @@ const noNftTips = () => {
 }
 function Redeem() {
     const [nftLists, setNftLists] = useState([]);
-    const [keys, setKeys] = useState(0);
+    const [remainKeys, setRemainKeys] = useState(99);
+
+    console.log('redeem view')
 
     const contract = new Contract()
-    console.log('redeem')
 
-    function remainingKeys() {
-        return contract.keyStore.remainingKeys()
+    const itemDom = (item, index) => {
+        async function redeem() {
+            console.log('redeem click')
+            const id = item.tokenId
+            await contract.redeemKey(id)
+            const newData = await contract.getNftData(id)
+            console.log('redeem new data', newData)
+            nftLists[index] = newData
+            setNftLists(nftLists)
+        }
+
+        console.log('item', item)
+        return (
+            <Card
+                key={index}
+                className="App-redeem-page_nft"
+                style={{ width: 300 }}
+                cover={
+                    <img
+                        src={item.uri}
+                    />
+                }
+                actions={[
+                    <Button type="primary" onClick={redeem} disabled={!item.canRedeem}>Redeem{item.remainingKeys}/{item.totalKeys}</Button>,
+                    <Avatar src={opensea} onClick={openseaClicked} />,
+                    <Avatar src={zora} onClick={zoraClicked} />,
+                ]}
+            >
+                <span className="App-redeem-page_nft-redeem-key">
+                    {item.redeemedKeys.join(',')}
+                </span>
+            </Card>
+        );
     }
 
     useEffect(() => {
         // Test call contract
         console.log('nft load')
-        contract.getNftIds().then((data) => {
-            console.log('nft data', data);
 
+        // await metamask.connect()
+
+        contract.getNftDatas().then((data) => {
+            console.log('nft data', data);
             setNftLists(data);
         }).catch((e) => {
-            console.error('nft load error', e, e.data)
+            console.error('nft load error', e)
         })
 
-        contract.keyStore.remainingKeys().then(i => {
-            setKeys(i)
-        }).catch(e => {
-            console.error('key load error', e)
-        })
     }, []);
 
+    // useEffect(() => {
+    //     contract.keyStore.remainingKeys().then(i => {
+    //         setRemainKeys(i)
+    //     }).catch(e => {
+    //         console.error('key load error', e)
+    //     })
+    // }, []);
+
     let { walletAddress } = useSelector((state) => state.auth);
+
+    let nft
+
+    try {
+        if (walletAddress) {
+            nft = nftLists?.length ?
+                nftLists.map((item, index) => itemDom(item, index))
+                : noNftTips()
+        } else {
+            nft = (<div className="App-redeem-page_keys-remain">
+                Connect MetaMask to redeem your keys!
+            </div>)
+        }
+    } catch (e) {
+        nft = 'error'
+    }
 
     return (
         <div className="App-redeem-page">
             <div className="App-redeem-page_tips">
                 <div className="App-redeem-page_keys-remain">
-                    Remaining keys in the store: {keys}
+                    Remaining keys in the store: {remainKeys}
                 </div>
             </div>
-            <div className="App-redeem-page_tips"> {
-                walletAddress ? (
-                    !!nftLists.length ?
-                        nftLists.map((item, index) => itemDom(item, index))
-                        : noNftTips()
-                ) : (
-                    <div className="App-redeem-page_keys-remain">
-                        Connect MetaMask to redeem your keys!
-                    </div>
-                )
-            }
+            <div className="App-redeem-page_tips">
+                {nft}
             </div>
         </div>
     );

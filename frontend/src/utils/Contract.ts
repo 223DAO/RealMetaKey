@@ -4,6 +4,7 @@ import { BigNumber, BigNumberish, ethers, Wallet } from "ethers";
 import { KeyStore } from "../types";
 import { Promise as Bluebird } from 'bluebird';
 import { metamask } from "./MetaMask";
+import axios from 'axios'
 
 // supress ts warnings for window.ethereum
 declare let window: any;
@@ -45,8 +46,13 @@ export class Contract {
   async getNftDatas(): Promise<NftData[] | []> {
     const ids = await this.keyStore.getNftIds()
     if (ids && ids.length > 0) {
-      return Bluebird.map(ids, (id: BigNumber) => {
-        return this.getNftData(id);
+      return Bluebird.map(ids, async (id: BigNumber) => {
+        const data: any = await this.getNftData(id)
+        const uri = data.uri
+        console.log('load json...', uri)
+        const res: any = await axios.get(uri)
+        const json: any = res.data
+        return { ...data, uri: json.image };
       })
     }
     return []
