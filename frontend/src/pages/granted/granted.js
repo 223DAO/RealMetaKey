@@ -1,18 +1,20 @@
 import { Card, Row, Col } from 'antd';
 
+import { CreateFlow } from './superfluid';
+
 import './granted.css';
 
 const cardsData = [
     {
-        title: 'Contribute 0.01 Matic for Stage 1', 
+        title: 'Contribute 0.01 Matic for Stage 1',
         content: 'You will get a silver NFT, can redeem 1 key'
     },
     {
-        title: 'Contribute 0.05 Matic for Stage 1', 
+        title: 'Contribute 0.05 Matic for Stage 1',
         content: 'You will get a gold NFT, can redeem 6 keys'
     },
     {
-        title: 'Contribute 0.1 Matic for Stage 1 & Stage 2', 
+        title: 'Contribute 0.1 Matic for Stage 1 & Stage 2',
         content: 'You will get two gold NFT, can redeem 2*6 keys'
     },
 ];
@@ -40,6 +42,7 @@ function Granted() {
             <Row gutter={[16, 16]} className="App-granted-page_cards">
                 { cardItems }
             </Row>
+            <CreateFlow></CreateFlow>
         </div>
     );
 }
