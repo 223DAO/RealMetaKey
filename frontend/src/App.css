@@ -247,3 +247,7 @@
   top: 46px;
   opacity: 1;
 }
+
+.App__header-login-button {
+  margin-right: 20px;
+}
