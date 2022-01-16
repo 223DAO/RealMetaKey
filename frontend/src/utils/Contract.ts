@@ -37,7 +37,7 @@ export class Contract {
   async getNftDatas(): Promise<NftData[] | []> {
     const ids = await this.keyStore.getNftIds()
     if (ids && ids.length > 0) {
-      return Bluebird.map(ids, id => {
+      return Bluebird.map(ids, (id: BigNumber) => {
         return this.getNftData(id);
       })
     }
