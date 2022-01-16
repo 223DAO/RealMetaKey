@@ -25,6 +25,8 @@ contract KeyStore {
 
     // If user can redeem new keys
     bool public redeemEnable = true;
+    // total redeemed keys
+    uint256 private _redeemedKeyCount = 0;
     // Keys in store for redemption
     string[] private _keys;
     //Mapping from token id to redeemed keys
@@ -89,7 +91,7 @@ contract KeyStore {
      * Number of keys remaining in the store
      */
     function remainingKeys() public view returns (uint256) {
-        return _keys.length;
+        return _keys.length - _redeemedKeyCount;
     }
 
     /**
@@ -132,7 +134,7 @@ contract KeyStore {
         address owner = nftContract.ownerOf(_tokenId);
         require(msg.sender == owner, "Only owner can redeem");
         require(redeemEnable, "Redemption disabled now");
-        require(_keys.length > 0, "No more keys in store");
+        require(remainingKeys() > 0, "No more keys in store");
 
         NFTData memory _nftData = nftData(_tokenId);
         require(
@@ -141,11 +143,12 @@ contract KeyStore {
         );
 
         nftContract.setRemaining(_tokenId, _nftData.remainingKeys - 1);
-        // Get and remove the last key from _keys
-        string memory _key = _keys[_keys.length - 1];
-        _keys.pop();
-        //Update _redeemedKeys
-        _redeemedKeys[_tokenId].push(_key);
+
+        // Update _redeemedKeys
+        _redeemedKeys[_tokenId].push(_keys[_redeemedKeyCount]);
+
+        // remove one key
+        _redeemedKeyCount = _redeemedKeyCount + 1;
     }
 
     /**
@@ -156,7 +159,7 @@ contract KeyStore {
      * - the store have keys remaining
      * - token has remaining keys to redeem
      */
-    function canRedeem(uint256 _remaining) private view returns (bool) {
-        return (_remaining > 0) && redeemEnable && (_keys.length > 0);
+    function canRedeem(uint256 _nftRemaining) private view returns (bool) {
+        return (_nftRemaining > 0) && redeemEnable && (remainingKeys() > 0);
     }
 }
