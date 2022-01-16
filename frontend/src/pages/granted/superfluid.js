@@ -27,7 +27,7 @@ async function createFlow(recipient, flowRate) {
   //   provider: new ethers.providers.JsonRpcProvider('https://rpc-mumbai.matic.today')
   // });
 
-  const token = "0x3aD736904E9e65189c3000c7DD2c8AC8bB7cD4e3"; // MATICx
+  const token = "0x96b82b65acf7072efeb00502f45757f254c2a0d4"; // MATICx
 
   const account = metamask.account
   const signer = provider.getSigner()
