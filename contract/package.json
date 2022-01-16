@@ -36,6 +36,7 @@
     "@openzeppelin/contracts": "^4.4.2",
     "@zoralabs/auction-house": "^1.1.3",
     "@zoralabs/core": "^1.0.7",
-    "@zoralabs/zdk": "^1.2.6"
+    "@zoralabs/zdk": "^1.2.6",
+    "@types/bluebird": "^3.5.36"
   }
 }

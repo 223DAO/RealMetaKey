@@ -2,11 +2,23 @@ import "@nomiclabs/hardhat-waffle";
 import '@typechain/hardhat'
 import 'hardhat-deploy';
 import { HardhatUserConfig } from "hardhat/config";
+import './tasks/addAdminForNFT'
+import './tasks/addUrisForNFT'
+import './tasks/grantNFT'
+import './tasks/getNftIds'
+import './tasks/checkNFTData'
 
 // admin account for test deploy on goerli
 let adminPrivateKeyTest = ''
 try {
   adminPrivateKeyTest = require('./secrets/admin-account-test.json')[0].privateKey
+} catch (e) {
+  console.error(e)
+}
+
+let userPrivateKeyTest1 = ''
+try {
+  userPrivateKeyTest1 = require('./secrets/user-account-test.json')[0].privateKey
 } catch (e) {
   console.error(e)
 }
@@ -25,6 +37,12 @@ const config: HardhatUserConfig = {
       url: rpcMumbai,
       accounts: [
         adminPrivateKeyTest
+      ]
+    },
+    userMumbai1: {
+      url: rpcMumbai,
+      accounts: [
+        userPrivateKeyTest1
       ]
     },
     hardhat: {},
