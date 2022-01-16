@@ -1,11 +1,4 @@
-.unlock-content {
-  display: none;
-}
-
-.unlock-content .locked {
-  display: none;
-}
-
-.unlock-content .unlocked {
-  display: none;
+.App__home-wrapper {
+  padding: 40px;
+  font-size: 1.5em;
 }

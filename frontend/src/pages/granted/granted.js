@@ -12,11 +12,7 @@ const cardsData = [
     {
         title: 'Contribute 0.05 Matic for Stage 1',
         content: 'You will get a gold NFT, can redeem 6 keys'
-    },
-    {
-        title: 'Contribute 0.1 Matic for Stage 1 & Stage 2',
-        content: 'You will get two gold NFT, can redeem 2*6 keys'
-    },
+    }
 ];
 
 function Granted() {
