@@ -9,3 +9,8 @@
 .unlock-content .unlocked {
   display: none;
 }
+
+.premium {
+  font-size: 1.5em;
+  padding: 40px;
+}
