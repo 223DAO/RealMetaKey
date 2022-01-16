@@ -97,6 +97,8 @@ function Redeem() {
           console.log('nft data', data);
 
           setNftLists(data);
+        }).catch((e)=> {
+            console.error('nft load error', e, e.data)
         })
     }, []);
 
@@ -113,7 +115,7 @@ function Redeem() {
                                 nftLists.map((item, index) => itemDom(item, index))
                                 : noNftTips()
                         }
-                        
+
                     </div>
                 )
                 : (

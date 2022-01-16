@@ -39,7 +39,8 @@
 
         window.addEventListener("unlockProtocol.status", function (event) {
             // We hide all .unlock-content elements
-            document.querySelector(".unlock-content").style.display = "none";
+            var e = document.querySelector(".unlock-content");
+            if (e) e.style.display = "none";
             // We show only the relevant element
             document
                 .querySelectorAll(`.unlock-content.${event.detail.state}`)
