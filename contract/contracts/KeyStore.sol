@@ -4,20 +4,19 @@ pragma solidity ^0.8.0;
 import "./NFT.sol";
 
 contract KeyStore {
-
     struct NFTData {
-	    uint256 tokenId;
-	    string uri;
-	    uint256 totalKeys;
-	    uint256 remainingKeys;
-	    string[] redeemedKeys;
-	    bool canRedeem;
-	}
+        uint256 tokenId;
+        string uri;
+        uint32 totalKeys;
+        uint32 remainingKeys;
+        string[] redeemedKeys;
+        bool canRedeem;
+    }
 
     //The standard total number of keys
-    uint32 public constant standardTotalKey = 1;
+    uint32 public constant TYPE_STANDRAD = 1;
     //The premium total number of keys
-    uint32 public constant premiumTotalKey = 6;
+    uint32 public constant TYPE_PREMIUM = 6;
 
     // Address of admin
     address public admin;
@@ -26,6 +25,8 @@ contract KeyStore {
 
     // If user can redeem new keys
     bool public redeemEnable = true;
+    // total redeemed keys
+    uint256 private _redeemedKeyCount = 0;
     // Keys in store for redemption
     string[] private _keys;
     //Mapping from token id to redeemed keys
@@ -62,47 +63,62 @@ contract KeyStore {
      * Admin can supply keys to the store contract
      */
     function supplyKeys(string[] calldata keys) external onlyAdmin {
-        _keys = keys;
+        for (uint256 i = 0; i < keys.length; ++i) {
+            _keys.push(keys[i]);
+        }
     }
 
     /**
      * Admin can grant _number NFTs of _type to _receiver
      * _type should be "standard" or "premium", representing the total keys available for the NFT
      */
-    function grantNft(address _receiver, string _type, uint8 _number) external onlyAdmin {
+    function grantNft(
+        address _receiver,
+        uint32 type_,
+        uint8 _number
+    ) external onlyAdmin {
         require(_number > 0, "No NFT to grant");
-        uint8 totalKeys;
-        if (_type == "standard") {
-            totalKeys = 1;
-        } else if (_type == "premium") {
-            totalKeys = 6;
+        require(
+            type_ == TYPE_STANDRAD || type_ == TYPE_PREMIUM,
+            "Wrong type of NFT"
+        );
+        for (uint8 i = 0; i < _number; ++i) {
+            nftContract.mint(_receiver, type_, type_);
         }
-        require(totalKeys > 0, "Wrong type of NFT");
     }
 
     /**
      * Number of keys remaining in the store
      */
     function remainingKeys() public view returns (uint256) {
-        return _keys.length;
+        return _keys.length - _redeemedKeyCount;
     }
 
     /**
      * get user nfts' data
      */
-    function getNfts() public view returns (NFTData[] memory nftDatas) {
-        address[] memory _tokenIds = _nftContract.getTokenIds(msg.sender);
-        if (_tokenIds.length == 0) {
-            return new NFTData[](0);
-        }
+    function getNftIds() public view returns (uint256[] memory) {
+        return nftContract.getTokenIdsByOwner(msg.sender);
+    }
 
-        NFTData[] memory _nftDatas = new NFTData[_tokenIds.length]();
-
-        uint256 i;
-        for (i=0;i<_tokenIds.length;i++){
-            _nftDatas[i] = nftData(_tokenIds[i]);
-        }
-        return _nftDatas;
+    /**
+     * get user nfts' data
+     */
+    function nftData(uint256 _tokenId) public view returns (NFTData memory) {
+        uint32 _total = nftContract.getTotal(_tokenId);
+        uint32 _remaining = nftContract.getRemaining(_tokenId);
+        string memory _uri = nftContract.tokenURI(_tokenId);
+        string[] memory _redeemed = _redeemedKeys[_tokenId];
+        bool _canRedeem = canRedeem(_remaining);
+        return
+            NFTData({
+                tokenId: _tokenId,
+                uri: _uri,
+                totalKeys: _total,
+                remainingKeys: _remaining,
+                redeemedKeys: _redeemed,
+                canRedeem: _canRedeem
+            });
     }
 
     /**
@@ -114,50 +130,25 @@ contract KeyStore {
      * - redeem enable
      * - the store have keys remaining
      */
-    function redeemKey(uint256 _tokenId)
-    public
-    returns (string memory key, NFTData memory nftData)
-    {
+    function redeemKey(uint256 _tokenId) public {
         address owner = nftContract.ownerOf(_tokenId);
         require(msg.sender == owner, "Only owner can redeem");
         require(redeemEnable, "Redemption disabled now");
-        require(_keys.length > 0, "No more keys in store");
+        require(remainingKeys() > 0, "No more keys in store");
 
         NFTData memory _nftData = nftData(_tokenId);
-        require(_nftData.remainingKeys > 0, "No more keys available for this NFT");
+        require(
+            _nftData.remainingKeys > 0,
+            "No more keys available for this NFT"
+        );
 
-        nftContract.redeem(_tokenId, _nftData.totalKeys, _nftData.remainingKeys - 1);
-        //Get and remove the last key from _keys
-        string memory _key = _keys[_keys.length - 1];
-        _keys.pop();
-        //Update _redeemedKeys
-        _redeemedKeys[_tokenId].push(_key);
+        nftContract.setRemaining(_tokenId, _nftData.remainingKeys - 1);
 
-        //Return _key and updated NFTData
-        return (_key, nftData(_tokenId));
-    }
+        // Update _redeemedKeys
+        _redeemedKeys[_tokenId].push(_keys[_redeemedKeyCount]);
 
-    /**
-     * get user nfts' data
-     */
-    function nftData(uint256 _tokenId)
-    public
-    view
-    returns (NFTData memory)
-    {
-        uint32 _total = nftContract.getTotal(_tokenId);
-        uint32 _remaining = nftContract.getRemaining(_tokenId);
-        string memory _uri = nftContract.getTokenUri(_tokenId);
-        string[] memory _redeemed = _redeemedKeys[_tokenId];
-        bool _canRedeem = canRedeem(_remaining);
-        return NFTData({
-            tokenId: _tokenId,
-            uri: _uri,
-            totalKeys: _total,
-            remainingKeys: _remaining,
-            redeemedKeys: _redeemed,
-            canRedeem: _canRedeem
-        });
+        // remove one key
+        _redeemedKeyCount = _redeemedKeyCount + 1;
     }
 
     /**
@@ -168,7 +159,7 @@ contract KeyStore {
      * - the store have keys remaining
      * - token has remaining keys to redeem
      */
-    function canRedeem(uint _remaining) private returns (bool) {
-        return (_remaining > 0) && redeemEnable && (_keys.length > 0);
+    function canRedeem(uint256 _nftRemaining) private view returns (bool) {
+        return (_nftRemaining > 0) && redeemEnable && (remainingKeys() > 0);
     }
 }
