@@ -112,11 +112,12 @@ export const CreateFlow = () => {
 
   return (
     <div>
-      <h2>Create a Flow</h2>
+      <h2>Create a Grant</h2>
       <Form>
         <FormGroup className="mb-3">
           <FormControl
             name="recipient"
+            disabled={true}
             value={recipient}
             onChange={handleRecipientChange}
             placeholder="Enter your Ethereum address"
@@ -139,19 +140,18 @@ export const CreateFlow = () => {
             }, 1000);
           }}
         >
-          Click to Create Your Stream
+          Click to Grant!
         </CreateButton>
       </Form>
 
       <div className="description">
         <p>
-          Go to the CreateFlow.js component and look at the <b>createFlow() </b>
-          function to see under the hood
+          You can see the flow in <a href="https://app.superfluid.finance/dashboard" target="_blank">superfluid dashboard</a>
         </p>
         <div className="calculation">
           <p>Your flow will be equal to:</p>
           <p>
-            <b>${flowRateDisplay !== " " ? flowRateDisplay : 0}</b> DAIx/month
+            <b>${flowRateDisplay !== " " ? flowRateDisplay : 0}</b> MATICx/month
           </p>
         </div>
       </div>
