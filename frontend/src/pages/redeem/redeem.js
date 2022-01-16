@@ -52,7 +52,7 @@ const zoraClicked = () => {
 }
 
 const openseaClicked = () => {
-    window.open("https://opensea.io/");
+    window.open("https://testnets.opensea.io/collection/realmetakey");
 }
 
 const itemDom = (item, index) => {

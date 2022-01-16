@@ -2,7 +2,6 @@ import { KEYSTORE_CONTRACT_ADDRESS } from '../deploy/contracts';
 import { KeyStore } from '../plugins/types';
 import { task } from "hardhat/config";
 import path from "path";
-import { Promise } from 'bluebird'
 
 task('supplyKeys', 'Supply keys to key store')
   .addParam("keylist", "Json file of keys")
