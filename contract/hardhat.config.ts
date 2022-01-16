@@ -4,9 +4,9 @@ import 'hardhat-deploy';
 import { HardhatUserConfig } from "hardhat/config";
 import './tasks/addAdminForNFT'
 import './tasks/addUrisForNFT'
-import './tasks/grantNFT'
-import './tasks/getNftIds'
 import './tasks/checkNFTData'
+import './tasks/getNftIds'
+import './tasks/grantNFT'
 
 // admin account for test deploy on goerli
 let adminPrivateKeyTest = ''
