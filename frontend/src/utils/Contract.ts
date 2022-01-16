@@ -1,13 +1,23 @@
 import { Provider } from "@ethersproject/abstract-provider";
 import { Web3Provider } from '@ethersproject/providers'
-import { BigNumberish, ethers, Wallet } from "ethers";
+import { BigNumber, BigNumberish, ethers, Wallet } from "ethers";
 import { KeyStore } from "../types";
+import { Promise as Bluebird } from 'bluebird';
 
 // supress ts warnings for window.ethereum
 declare let window: any;
 
 const ABI = require('./KeyStoreABI.json')
 const ADDRESS = '' // TODO
+
+export interface NftData {
+  tokenId: BigNumber;
+  uri: string;
+  totalKeys: number;
+  remainingKeys: number;
+  redeemedKeys: string[];
+  canRedeem: boolean;
+}
 
 export class Contract {
 
@@ -20,12 +30,23 @@ export class Contract {
     this.keyStore = new ethers.Contract(ADDRESS, ABI, this.provider.getSigner()) as KeyStore
   }
 
-  getNftData(nftId: BigNumberish) {
+  getNftData(nftId: BigNumberish): Promise<NftData> {
     return this.keyStore.nftData(nftId)
   }
 
-  redeemKey(nftId: BigNumberish) {
-    return this.keyStore.redeemKey(nftId)
+  async getNftDatas(): Promise<NftData[] | []> {
+    const ids = await this.keyStore.getNftIds()
+    if (ids && ids.length > 0) {
+      return Bluebird.map(ids, id => {
+        return this.getNftData(id);
+      })
+    }
+    return []
+  }
+
+  async redeemKey(nftId: BigNumberish) {
+    const transaction = await this.keyStore.redeemKey(nftId)
+    return transaction.wait()
   }
 }
 
