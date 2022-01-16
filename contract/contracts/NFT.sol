@@ -31,7 +31,7 @@ contract NFT is ERC721 {
     mapping(uint32 => string) private _uris;
 
 
-    constructor() ERC721("Name", "Symbol") {
+    constructor() ERC721("RealMetaKey", "RMK") {
         admin = msg.sender;
     }
 
@@ -102,12 +102,12 @@ contract NFT is ERC721 {
     }
 
     /**
-     * Only admin can mint
+     * Only store contract can mint
      * Mint token to _to, with _total total and _remain remain
      */
     function mint(address _to, uint32 _total, uint32 _remaining) 
     external 
-    onlyAdmin 
+    onlyStore 
     {
         uint32 id = uriMappingID(_total, _remaining);
         require(_uri != "", "No content representing the total and remaining");

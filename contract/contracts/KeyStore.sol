@@ -13,6 +13,11 @@ contract KeyStore {
 	    string[] redeemedKeys;
 	    bool canRedeem;
 	}
+
+    //The standard total number of keys
+    uint32 public constant standardTotalKey = 1;
+    //The premium total number of keys
+    uint32 public constant premiumTotalKey = 6;
     
     // Address of admin
     address public admin;
@@ -61,6 +66,21 @@ contract KeyStore {
     }
 
     /**
+     * Admin can grant _number NFTs of _type to _receiver
+     * _type should be "standard" or "premium", representing the total keys available for the NFT
+     */
+    function grantNft(address _receiver, string _type, uint8 _number) external onlyAdmin {
+        require(_number > 0, "No NFT to grant");
+        uint8 totalKeys;
+        if (_type == "standard") {
+            totalKeys = 1;
+        } else if (_type == "premium") {
+            totalKeys = 6;
+        }
+        require(totalKeys > 0, "Wrong type of NFT");
+    }
+
+    /**
      * Number of keys remaining in the store
      */
     function remainingKeys() public view returns (uint256) {
@@ -80,7 +100,7 @@ contract KeyStore {
 
         uint256 i;
         for (i=0;i<_tokenIds.length;i++){
-            _nftDatas[i] = nftDataFrom(_tokenIds[i]);
+            _nftDatas[i] = nftData(_tokenIds[i]);
         }
         return _nftDatas;
     }
@@ -103,7 +123,7 @@ contract KeyStore {
         require(redeemEnable, "Redemption disabled now");
         require(_keys.length > 0, "No more keys in store");
 
-        NFTData memory _nftData = nftDataFrom(_tokenId);
+        NFTData memory _nftData = nftData(_tokenId);
         require(_nftData.remainingKeys > 0, "No more keys available for this NFT");
 
         nftContract.redeem(_tokenId, _nftData.totalKeys, _nftData.remainingKeys - 1);
@@ -114,14 +134,14 @@ contract KeyStore {
         _redeemedKeys[_tokenId].push(_key);
 
         //Return _key and updated NFTData
-        return (_key, nftDataFrom(_tokenId));
+        return (_key, nftData(_tokenId));
     }
 
     /**
      * get user nfts' data
      */
-    function nftDataFrom(uint256 _tokenId) 
-    private 
+    function nftData(uint256 _tokenId) 
+    public 
     view 
     returns (NFTData memory) 
     {
