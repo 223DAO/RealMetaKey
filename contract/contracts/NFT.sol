@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@zoralabs/core/dist/contracts/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract NFT is ERC721 {
+contract NFT is ERC721Enumerable {
 
     /**
      * Structure to keep token totoal and remaining redemptions
@@ -65,7 +65,7 @@ contract NFT is ERC721 {
     modifier onlyValidState(uint32 _total, uint32 _remaining) {
         require(_total <= maxTotal, "The total number of redemptions exceeds max value");
         require(
-            _remaining <= _total, 
+            _remaining <= _total,
             "Token's remaining redemptions can't be higher than total"
         );
         _;
@@ -74,9 +74,9 @@ contract NFT is ERC721 {
     /**
      * Admin can change admin
      */
-    function setAdmin(address _admin) 
-    external 
-    onlyAdmin 
+    function setAdmin(address _admin)
+    external
+    onlyAdmin
     {
         admin = _admin;
     }
@@ -84,9 +84,9 @@ contract NFT is ERC721 {
     /**
      * Admin can change store contract
      */
-    function setStore(address _store) 
-    external 
-    onlyAdmin 
+    function setStore(address _store)
+    external
+    onlyAdmin
     {
         store = _store;
     }
@@ -94,9 +94,9 @@ contract NFT is ERC721 {
     /**
      * Admin can change the uri mapping
      */
-    function setUriMapping(mapping(uint32 => string) calldata uris) 
-    external 
-    onlyAdmin 
+    function setUriMapping(mapping(uint32 => string) calldata uris)
+    external
+    onlyAdmin
     {
         _uris = uris;
     }
@@ -105,9 +105,9 @@ contract NFT is ERC721 {
      * Only store contract can mint
      * Mint token to _to, with _total total and _remain remain
      */
-    function mint(address _to, uint32 _total, uint32 _remaining) 
-    external 
-    onlyStore 
+    function mint(address _to, uint32 _total, uint32 _remaining)
+    external
+    onlyStore
     {
         uint32 id = uriMappingID(_total, _remaining);
         require(_uri != "", "No content representing the total and remaining");
@@ -129,10 +129,10 @@ contract NFT is ERC721 {
     /**
      * Get all token ids of _owner
      */
-    function getTokenIds(address _owner) 
-    external 
-    view 
-    returns (uint256[] memory) 
+    function getTokenIds(address _owner)
+    external
+    view
+    returns (uint256[] memory)
     {
         uint256 _tokenCount = ERC721.balanceOf(_owner);
         if (_tokenCount.length == 0) {
@@ -151,11 +151,11 @@ contract NFT is ERC721 {
     /**
      * Get token total redemption count from _tokenId
      */
-    function getTotal(uint256 _tokenId) 
-    external 
-    view 
+    function getTotal(uint256 _tokenId)
+    external
+    view
     onlyExistingToken(_tokenId)
-    returns (uint32) 
+    returns (uint32)
     {
         return _states[_tokenId].total;
     }
@@ -163,11 +163,11 @@ contract NFT is ERC721 {
     /**
      * Get token remaining redemption count from _tokenId
      */
-    function getRemaining(uint256 _tokenId) 
-    external 
-    view 
+    function getRemaining(uint256 _tokenId)
+    external
+    view
     onlyExistingToken(_tokenId)
-    returns (uint32) 
+    returns (uint32)
     {
         return _states[_tokenId].remaining;
     }
@@ -175,11 +175,11 @@ contract NFT is ERC721 {
     /**
      * Get token URI from _tokenId
      */
-    function getTokenUri(uint256 _tokenId) 
-    external 
-    view 
+    function getTokenUri(uint256 _tokenId)
+    external
+    view
     onlyExistingToken(_tokenId)
-    returns (string memory) 
+    returns (string memory)
     {
         return ERC721URIStorage.tokenURI(_tokenId);
     }
@@ -187,8 +187,8 @@ contract NFT is ERC721 {
     /**
      * Update remaining total and remaining redemption count and uri for token with _tokenId
      */
-    function redeem(uint256 _tokenId, uint32 _total, uint32 _remaining) 
-    external 
+    function redeem(uint256 _tokenId, uint32 _total, uint32 _remaining)
+    external
     onlyStore
     onlyExistingToken(_tokenId)
     {
@@ -208,10 +208,10 @@ contract NFT is ERC721 {
     /**
      * Get URI mapping id from total and remaining
      */
-    function uriMappingID(uint32 _total, uint32 _remaining) 
-    private 
+    function uriMappingID(uint32 _total, uint32 _remaining)
+    private
     onlyValidState(_total, _remaining)
-    returns (uint32) 
+    returns (uint32)
     {
         return 100_000*_total + _remaining;
     }

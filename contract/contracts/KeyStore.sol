@@ -18,7 +18,7 @@ contract KeyStore {
     uint32 public constant standardTotalKey = 1;
     //The premium total number of keys
     uint32 public constant premiumTotalKey = 6;
-    
+
     // Address of admin
     address public admin;
     // Associated NFT contract
@@ -140,10 +140,10 @@ contract KeyStore {
     /**
      * get user nfts' data
      */
-    function nftData(uint256 _tokenId) 
-    public 
-    view 
-    returns (NFTData memory) 
+    function nftData(uint256 _tokenId)
+    public
+    view
+    returns (NFTData memory)
     {
         uint32 _total = nftContract.getTotal(_tokenId);
         uint32 _remaining = nftContract.getRemaining(_tokenId);

@@ -4,6 +4,7 @@ import zora from '../../assets/zora.png';
 import opensea from '../../assets/opensea.png';
 import eye from '../../assets/eye.png';
 import noEye from '../../assets/noEye.png';
+import { contract } from '../../utils/Contract';
 
 //todo : remove Test
 var nftList = ['../../assets/zora.png', '../../assets/zora.png'];
@@ -14,6 +15,16 @@ const zoraClicked = () => {
 
 const openseaClicked = () => {
     window.open("https://opensea.io/");
+}
+
+function getNfts() {
+    return contract.getNfts()
+}
+
+function redeem(nftId) {
+    const transaction = await contract.redeemKey(nftId)
+    await transaction.wait() // receipt
+
 }
 
 const singleNft = () => {
