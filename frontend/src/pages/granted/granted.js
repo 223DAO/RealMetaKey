@@ -32,6 +32,7 @@ function Granted() {
 
     return (
         <div className="App-granted-page">
+            <p>(Please switch to the mumbai testnet)</p>
             <div className="App-granted-page_tooltip">
                 Grant with superfluid, and you can cancel the flow any time if you change your mind.
             </div>

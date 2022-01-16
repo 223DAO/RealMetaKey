@@ -11,6 +11,8 @@ function Premium() {
     <div >
       <h1>Welcome to the Premium Content</h1>
 
+      <p>(Please switch to the Polygon mainnet, clear cookies and refresh page before the demo)</p>
+
       <p className="unlock-content locked">Premium content is currently locked 🔒<br />
         Supprt us on grant page, and you will get the unlock airdrop. <br />
         Or you can buy the lock with 0.01 MATIC.</p>

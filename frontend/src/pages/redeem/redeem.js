@@ -155,6 +155,7 @@ function Redeem() {
 
     return (
         <div className="App-redeem-page">
+            <p>(Please switch to the mumbai testnet)</p>
             <div className="App-redeem-page_tips">
                 <div className="App-redeem-page_keys-remain">
                     Remaining keys in the store: {remainKeys}
