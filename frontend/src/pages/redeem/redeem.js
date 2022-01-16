@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Avatar, Button } from 'antd';
 
@@ -10,6 +10,7 @@ import opensea from '../../assets/opensea.png';
 import eye from '../../assets/eye.png';
 import noEye from '../../assets/noEye.png';
 import nftImage from '../../assets/nftImage.png';
+import { contract } from "../../utils/Contract";
 
 const nftLists = [
     {
@@ -75,6 +76,15 @@ const itemDom = (item, index) => {
 }
 
 function Redeem() {
+
+    useEffect(() => {
+      // Test call contract
+      console.log('nft load')
+        contract.getNftIds().then((r) => {
+          console.log('nft data', r)
+        })
+    })
+
     let { walletAddress } = useSelector((state) => state.auth);
 
     return(
