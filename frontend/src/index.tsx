@@ -7,18 +7,30 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import './index.css';
 import App from './App';
 import rootReducer from './redux/reducers/index';
+import { persistStore, persistReducer } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import storage from 'redux-persist/lib/storage';
+
+const persistConfig = {
+    key: 'root',
+    storage,
+}
 
 const composeEnhancers = composeWithDevTools({
-  // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+    // Specify name here, actionsBlacklist, actionsCreators and other options if needed
 });
 
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)));
+const persistor = persistStore(store);
 
 ReactDOM.render(
-  <Provider store={store}>
-      <App />
+    <Provider store={store}>
+        <PersistGate persistor={persistor}>
+            <App />
+        </PersistGate>
     </Provider>,
-  document.getElementById('root')
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function
