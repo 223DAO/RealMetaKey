@@ -135,9 +135,15 @@ function Redeem() {
 
     try {
         if (walletAddress) {
-            nft = nftLists?.length ?
-                nftLists.map((item, index) => itemDom(item, index))
-                : noNftTips()
+            nft = (
+                <div className="App-redeem-page_nfts">
+                    {
+                        nftLists?.length ?
+                            nftLists.map((item, index) => itemDom(item, index))
+                            : noNftTips()
+                    }
+                </div>
+            )
         } else {
             nft = (<div className="App-redeem-page_keys-remain">
                 Connect MetaMask to redeem your keys!
