@@ -66,6 +66,7 @@ const noNftTips = () => {
 function Redeem() {
     const [nftLists, setNftLists] = useState([]);
     const [remainKeys, setRemainKeys] = useState(99);
+    const [loading, setLoading] = useState(false);
 
     console.log('redeem view')
 
@@ -80,6 +81,7 @@ function Redeem() {
             console.log('redeem new data', newData)
             nftLists[index] = newData
             setNftLists(nftLists)
+            setRemainKeys(remainKeys - 1)
         }
 
         console.log('item', item)
@@ -106,19 +108,29 @@ function Redeem() {
         );
     }
 
+    function loadNFT() {
+        const contract1 = new Contract()
+
+        setLoading(true);
+        contract1.getNftDatas().then((data) => {
+            console.log('nft data', data);
+            setNftLists(data);
+            setLoading(false);
+        }).catch((e) => {
+            console.error('nft load error', e)
+        })
+    }
+
     useEffect(() => {
         // Test call contract
         console.log('nft load')
 
-        // await metamask.connect()
-
-        contract.getNftDatas().then((data) => {
-            console.log('nft data', data);
-            setNftLists(data);
-        }).catch((e) => {
-            console.error('nft load error', e)
-        })
-
+        if (walletAddress) {
+            loadNFT()
+            metamask.addListener('account', (account) => {
+                loadNFT()
+            })
+        }
     }, []);
 
     // useEffect(() => {
@@ -138,9 +150,11 @@ function Redeem() {
             nft = (
                 <div className="App-redeem-page_nfts">
                     {
-                        nftLists?.length ?
-                            nftLists.map((item, index) => itemDom(item, index))
-                            : noNftTips()
+                        loading ? <h3>Loading...</h3> : (
+                            nftLists?.length ?
+                                nftLists.map((item, index) => itemDom(item, index))
+                                : noNftTips()
+                        )
                     }
                 </div>
             )
