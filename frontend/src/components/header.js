@@ -8,7 +8,9 @@ import { metamask } from "../utils/MetaMask";
 
 function Header() {
     const dispatch = useDispatch();
-    const { walletAddress } = useSelector((state) => state.auth);
+    let { walletAddress } = useSelector((state) => state.auth);
+
+    console.log('header')
 
     function handleAccount(account) {
         console.log('account changed', account)
@@ -16,11 +18,15 @@ function Header() {
     }
 
     useEffect(() => {
+        console.log('use effect')
         metamask.addListener('account', handleAccount)
+        if (walletAddress) {
+            console.log('localstorage has account, try connect metamask silently')
+            metamask.connect()
+        }
 
         return function () {
             metamask.removeListener('account', handleAccount)
-            metamask.disconnect()
         };
     })
 
@@ -30,7 +36,12 @@ function Header() {
 
     function onConnectClick() {
         console.log('connect click')
-        metamask.connect().then(console.log)
+        return metamask.connect()
+    }
+
+    function onDisconnectClick() {
+        console.log('disconnect click')
+        return metamask.disconnect()
     }
 
     return (
@@ -52,8 +63,8 @@ function Header() {
             <div className="App__header-login-button">
                 {
                     walletAddress ?
-                        <span>{ellipsizeAddress(walletAddress)}</span>
-                        : <Button type="primary" onClick={onConnectClick}>Connect Wallet</Button>
+                        <Button type="primary" onClick={onDisconnectClick}>Disconnect ({ellipsizeAddress(walletAddress)})</Button> :
+                        <Button type="primary" onClick={onConnectClick}>Connect Wallet {walletAddress}</Button>
                 }
             </div>
         </div>
