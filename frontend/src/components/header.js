@@ -10,8 +10,6 @@ function Header() {
     const dispatch = useDispatch();
     let { walletAddress } = useSelector((state) => state.auth);
 
-    console.log('header')
-
     function handleAccount(account) {
         console.log('account changed', account)
         dispatch(metamaskAccount(account))

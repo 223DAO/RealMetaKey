@@ -1,81 +1,20 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-  }
-  
-  @media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-      animation: App-logo-spin infinite 20s linear;
-    }
-  }
-  
-  .App-header {
-    background-color: #2d90b8;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  }
+.App-redeem-page {
+  display: flex;
+  justify-content: center;
+}
 
-  .Login-header {
-    background-color: #2d90b8;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  }
+.App-redeem-page_nfts {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1300px;
+}
 
-  .Login-content {
-    display: flex;
-    flex-direction: row;
-    margin-top: 1%;
-    font-size: calc(10px + 2vmin);
-    color: white;
-  }
-  
-  .Title-Max-Font {
-    font-size: calc(15px + 2vmin);
-  }
-  
-  .Connect-Button {
-    margin-left: 5%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff;
-  }
+.App-redeem-page_nft {
+  margin: 20px 0;
+  margin-left: 20px;
+}
 
-  .Single-NFT {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .Single-NFT-Act {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  
-  .App-link {
-    color: #61dafb;
-  }
-  
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.App-redeem-page_nft-redeem-key {
+  font-weight: bold;
+  word-break: break-all;
 }

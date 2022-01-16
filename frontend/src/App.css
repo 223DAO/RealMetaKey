@@ -16,16 +16,6 @@
   background: #FFF;
 }
 
-.App__header-logo {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  width: 23px;
-  height: 43px;
-  left: 32px;
-  top: calc(50% - 43px/2 + 0.5px);
-}
-
 .App__header-links {
   display: flex;
   width: 1200px;
@@ -59,174 +49,7 @@
   background: linear-gradient(111.6deg, #E7EFFB -0.38%, #ECF9F1 100%), #F2F2F2;
   width: 100%;
   padding-bottom: 30px;
-}
-
-.App__header-right {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 32px;
-  font-family: Arial;
-}
-
-.App__header-profile-wrapper {
-  width: 179px;
-  border-radius: 8px;
-}
-
-.App__header-profile-wrapper:hover {
-  background: #EAEAEA;
-}
-
-.App__header-profile {
-  display: flex;
-  align-items: center;
-  position: relative;
-  padding: 16px;
-}
-
-.App__header-profile:hover {
-  cursor: pointer;
-}
-
-.App__header-profile img {
-  margin-right: 12px;
-}
-
-.App__header-profile-arrow {
-  position: absolute;
-  right: 20px;
-}
-
-.App__header-wallet {
-  display: flex;
-  flex-direction: column;
-}
-
-.App__header-wallet label {
-  color: #1A48E9;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 16px;
-}
-
-.App__header-wallet span {
-  font-style: italic;
-  font-weight: normal;
-  font-size: 10px;
-  line-height: 11px;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.App__header-right-divider {
-  height: 24px;
-  margin: 0 16px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-}
-
-.App__header-profile-dropdown {
-  position: absolute;
-  display: none;
-  flex-direction: column;
-  width: 276px;
-  height: max-content;
-  padding: 24px;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.06), 0px 2px 16px rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  background: #FFFFFF;
-  z-index: 99;
-  top: 62px;
-  right: 0;
-}
-
-.App__header-profile-dropdown[data-visible="true"] {
-  display: flex;
-}
-
-.App__header-profile-address {
-  display: flex;
-  color: #000000;
-}
-
-.App__header-profile-address img {
-  width: 48px;
-  height: 48px;
-  margin-right: 16px;
-}
-
-.App__header-profile-address-info {
-  display: flex;
-  flex-direction: column;
-  width: 164px;
-}
-
-.App__header-profile-address-info label {
-  font-style: normal;
-  font-weight: bold;
-  font-size: 14px;
-  
-}
-
-.App__header-profile-address-info span {
-  font-style: normal;
-  font-weight: normal;
-  font-size: 12px;
-  line-height: 16px;
-  text-decoration-line: underline;
-  word-break: break-all;
-}
-
-.App__header-profile-divider {
-  width: 100%;
-  height: 0px;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  margin: 12px 0;
-}
-
-.App__header-profile-property {
-  display: flex;
-  justify-content: space-between;
-}
-
-.App__header-profile-property-item {
-  display: flex;
-  flex-direction: column;
-  font-style: normal;
-  font-weight: bold;
-}
-
-.App__header-profile-property-item label {
-  font-size: 12px;
-  line-height: 14px;
-}
-
-.App__header-profile-property-item span {
-  margin-top: 4px;
-  font-size: 17px;
-  line-height: 22px;
-  color: #1A48E9;
-}
-
-.App__header-profile-choice-item {
-  display: flex;
-  height: 48px;
-  align-items: center;
-  font-style: italic;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 16px;
-  border-radius: 8px;
-  padding-left: 4px;
-}
-
-.App__header-profile-choice-item:hover {
-  background-color: rgba(0, 163, 255, 0.1);
-  cursor: pointer;
-}
-
-.App__header-profile-choice-item span {
-  margin-left: 14px;
+  text-align: center;
 }
 
 .App__header-links a:hover,
@@ -234,20 +57,7 @@
   color: #1A48E9;
 }
 
-.App__header-link-line {
-  opacity: 0;
-}
-
-.App__header-link-active .App__header-link-line {
-  width: 100%;
-  height: 0px;
-  border: 2px solid #1A48E9;
-  position: absolute;
-  left: 0;
-  top: 46px;
-  opacity: 1;
-}
-
 .App__header-login-button {
   margin-right: 20px;
 }
+

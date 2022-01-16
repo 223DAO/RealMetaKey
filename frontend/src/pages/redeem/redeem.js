@@ -1,13 +1,48 @@
-import logo from '../../assets/logo.svg';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Card, Avatar, Button } from 'antd';
+
 import './redeem.css';
+
+import logo from '../../assets/logo.svg';
 import zora from '../../assets/zora.png';
 import opensea from '../../assets/opensea.png';
 import eye from '../../assets/eye.png';
 import noEye from '../../assets/noEye.png';
-import { contract } from '../../utils/Contract';
+import nftImage from '../../assets/nftImage.png';
 
-//todo : remove Test
-var nftList = ['../../assets/zora.png', '../../assets/zora.png'];
+const nftLists = [
+    {
+        image: nftImage,
+        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+        redeemedCount: 2,
+        total: 6,
+    },
+    {
+        image: nftImage,
+        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+        redeemedCount: 2,
+        total: 6,
+    },
+    {
+        image: nftImage,
+        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+        redeemedCount: 2,
+        total: 6,
+    },
+    {
+        image: nftImage,
+        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+        redeemedCount: 2,
+        total: 6,
+    },
+    {
+        image: nftImage,
+        hasRedeemedKey: '0x714779977aBFa568b426ceECCef5b0480A3fFDFD',
+        redeemedCount: 2,
+        total: 6,
+    }
+];
 
 const zoraClicked = () => {
     window.open("https://zora.co/");
@@ -17,86 +52,53 @@ const openseaClicked = () => {
     window.open("https://opensea.io/");
 }
 
-function getNfts() {
-    return contract.getNfts()
-}
-
-function redeem(nftId) {
-    const transaction = await contract.redeemKey(nftId)
-    await transaction.wait() // receipt
-
-}
-
-const singleNft = () => {
-    const src = logo
-    //todo : fix NaN noEye click
+const itemDom = (item, index) => {
     return (
-        <div className="Single-NFT">
-            <img src={src} width={74} height={74} className="App-logo" alt="logo" />
-            <div className="Single-NFT-Act">
-                <div className="Single-NFT">
-                    <p>
-                        key : ask***kdh
-                    </p>
-                    <button className='Connect-Button'>
-                        <img src={noEye} width={12} height={12} alt="eye" onClick={zoraClicked} />
-                    </button>
-                </div>
-                <div className="Single-NFT">
-                    <button className='Connect-Button'>
-                        <img src={zora} width={36} height={36} alt="zora" onClick={zoraClicked} />
-                        Zora
-                    </button>
-                    <button className='Connect-Button'>
-                        <img src={opensea} width={36} height={36} alt="opensea" onClick={openseaClicked} />
-                        Opensea
-                    </button>
-                    <button className='Connect-Button' onClick={NaN}>
-                        Redeem
-                    </button>
-                </div>
-            </div>
-        </div>
+        <Card
+            key={index}
+            className="App-redeem-page_nft"
+            style={{ width: 300 }}
+            cover={
+            <img
+                src={item.image}
+            />
+            }
+            actions={[
+                <Button>Redeem</Button>,
+                <Avatar src={opensea} onClick={openseaClicked} />,
+                <Avatar src={zora} onClick={zoraClicked} />,
+            ]}
+        >
+            <span className="App-redeem-page_nft-redeem-key">{item.hasRedeemedKey}</span>
+        </Card>
     );
 }
 
-function UnLoginRedeem() {
-    return (
-        <div className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-                Remaining keys in the store : 180
-            </p>
-            <p className='Title-Max-Font'>
-                Connect MetaMask to redeem your keys!
-            </p>
-        </div>
-    );
-}
+function Redeem() {
+    let { walletAddress } = useSelector((state) => state.auth);
 
-function LoginRedeem() {
-    return (
-        <div className="Login-header">
-            <p className='Title-Max-Font'>
-                Remaining keys in the store: 180
-            </p>
-            {nftList.length ?
-                nftList.map(singleNft) :
-                <p className='Title-Max-Font'>
-                    You don't have any NFT.
-                </p>}
-
+    return(
+        <div className="App-redeem-page">
+            {
+                walletAddress ? 
+                (
+                    <div className="App-redeem-page_nfts">
+                        {nftLists.map((item, index) => itemDom(item, index))}
+                    </div>
+                )
+                : (
+                    <div className="App-redeem-page_tips">
+                        <div className="App-redeem-page_keys-remain">
+                            Remaining keys in the store: 180
+                        </div>
+                        <div className="App-redeem-page_connect-tooltip">
+                            Connect MetaMask to redeem your keys!
+                        </div>
+                    </div>
+                )
+            }
         </div>
     );
 }
 
 export default Redeem;
-
-function Redeem() {
-    const login = true;
-    if (login) {
-        return <LoginRedeem />
-    } else {
-        return <UnLoginRedeem />
-    }
-}

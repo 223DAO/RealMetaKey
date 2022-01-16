@@ -2,6 +2,14 @@
     padding: 20px;
 }
 
-.App-granted-page_cards {
-    display: flex;
+.App-granted-page_tooltip {
+    font-family: SF Pro Display;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.App-granted-page_card {
+    height: 450px;
+    min-width: 350px;
 }
