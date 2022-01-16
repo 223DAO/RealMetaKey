@@ -26,12 +26,12 @@ export class Contract {
   keyStore: KeyStore
 
   constructor() {
-    this.provider = new ethers.providers.Web3Provider(window.ethereum)
+    this.provider = new ethers.providers.Web3Provider(window.ethereum, "any")
     this.keyStore = new ethers.Contract(ADDRESS, ABI, this.provider.getSigner()) as KeyStore
-    metamask.addListener('account', () => {
-      this.provider = new ethers.providers.Web3Provider(window.ethereum)
-      this.keyStore = new ethers.Contract(ADDRESS, ABI, this.provider.getSigner()) as KeyStore
-    })
+    // metamask.addListener('account', () => {
+    //   this.provider = new ethers.providers.Web3Provider(window.ethereum)
+    //   this.keyStore = new ethers.Contract(ADDRESS, ABI, this.provider.getSigner()) as KeyStore
+    // })
   }
 
   async getNftData(nftId: BigNumberish): Promise<NftData> {
@@ -58,4 +58,4 @@ export class Contract {
   }
 }
 
-export const contract = new Contract()
+// export const contract = new Contract()

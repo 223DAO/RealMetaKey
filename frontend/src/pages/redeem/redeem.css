@@ -1,6 +1,8 @@
 .App-redeem-page {
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .App-redeem-page_nfts {

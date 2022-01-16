@@ -4,7 +4,7 @@ import { Framework } from "@superfluid-finance/sdk-core";
 import { Button, Form, FormGroup, FormControl, Spinner } from "react-bootstrap";
 import "./createFlow.css";
 import { ethers } from "ethers";
-import { contract } from "../../utils/Contract";
+// import { contract } from "../../utils/Contract";
 import { metamask } from "../../utils/MetaMask";
 
 //where the Superfluid logic takes place
