@@ -66,11 +66,21 @@ contract NFT is ERC721Enumerable {
     /**
      * Admin can change admin
      */
-    function setAdmin(address _admin)
+    function addAdmin(address _admin)
     external
     onlyAdmin
     {
-        admin = _admin;
+        admins[_admin] = true;
+    }
+
+    /**
+     * Admin can change admin
+     */
+    function removeAdmin(address _admin)
+    external
+    onlyAdmin
+    {
+        admins[_admin] = false;
     }
 
     /**
