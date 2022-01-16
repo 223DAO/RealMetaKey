@@ -2,17 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NFT is ERC721Enumerable {
+contract NFT is ERC721Enumerable, ERC721URIStorage {
 
     /**
      * Structure to keep token totoal and remaining redemptions
      * The total and remaining can be up to 42,949
      */
     struct NFTState {
-	    uint32 total;
-	    uint32 remaining;
-	}
+        uint32 total;
+        uint32 remaining;
+    }
 
     //The maximum total supported
     uint32 public constant maxTotal = 42_949;
@@ -33,6 +35,37 @@ contract NFT is ERC721Enumerable {
 
     constructor() ERC721("RealMetaKey", "RMK") {
         admins[msg.sender] = true;
+    }
+
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
+    internal
+    override(ERC721, ERC721Enumerable)
+    {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _burn(uint256 tokenId) 
+    internal 
+    override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+    public
+    view
+    override(ERC721, ERC721URIStorage)
+    returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+    public
+    view
+    override(ERC721, ERC721Enumerable)
+    returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 
     /**
@@ -64,7 +97,7 @@ contract NFT is ERC721Enumerable {
     }
 
     /**
-     * Admin can change admin
+     * Admin can add admin
      */
     function addAdmin(address _admin)
     external
@@ -74,7 +107,7 @@ contract NFT is ERC721Enumerable {
     }
 
     /**
-     * Admin can change admin
+     * Admin can remove admin
      */
     function removeAdmin(address _admin)
     external
@@ -96,11 +129,11 @@ contract NFT is ERC721Enumerable {
     /**
      * Admin can change the uri mapping
      */
-    function setUriMapping(mapping(uint32 => string) calldata uris)
+    function setUriMapping(uint32 _id, string calldata _uri)
     external
     onlyAdmin
     {
-        _uris = uris;
+        _uris[_id] = _uri;
     }
 
     /**
@@ -112,14 +145,14 @@ contract NFT is ERC721Enumerable {
     onlyAdmin
     {
         uint32 id = uriMappingID(_total, _remaining);
-        require(_uri != "", "No content representing the total and remaining");
         string memory _uri = _uris[id];
+        require(_uri != "", "No content representing the total and remaining");
 
         uint256 _tokenId = _tokenIdTracker.current();
         ERC721._safeMint(_to, _tokenId);
         _tokenIdTracker.increment();
 
-        super._setTokenUri(_tokenId, _uri);
+        ERC721URIStorage._setTokenURI(_tokenId, _uri);
         _states[_tokenId] = NFTState(
             {
                 total: _total,
@@ -137,7 +170,7 @@ contract NFT is ERC721Enumerable {
     returns (uint256[] memory)
     {
         uint256 _tokenCount = ERC721.balanceOf(_owner);
-        if (_tokenCount.length == 0) {
+        if (_tokenCount == 0) {
             return new uint256[](0);
         }
 
@@ -195,10 +228,10 @@ contract NFT is ERC721Enumerable {
     onlyExistingToken(_tokenId)
     {
         uint32 id = uriMappingID(_total, _remaining);
-        require(_uri != "", "No content representing the total and remaining");
         string memory _uri = _uris[id];
+        require(_uri != "", "No content representing the total and remaining");
 
-        super._setTokenUri(_tokenId, _uri);
+        ERC721URIStorage._setTokenURI(_tokenId, _uri);
         _states[_tokenId] = NFTState(
             {
                 total: _total,
@@ -212,6 +245,7 @@ contract NFT is ERC721Enumerable {
      */
     function uriMappingID(uint32 _total, uint32 _remaining)
     private
+    pure
     onlyValidState(_total, _remaining)
     returns (uint32)
     {
