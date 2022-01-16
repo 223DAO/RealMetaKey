@@ -21,7 +21,7 @@ contract NFT is ERC721Enumerable {
     Counters.Counter private _tokenIdTracker;
 
     // Address of admin
-    address public admin;
+    mapping (address => bool) admins;
     // Address of store contract
     address public store;
 
@@ -32,22 +32,14 @@ contract NFT is ERC721Enumerable {
 
 
     constructor() ERC721("RealMetaKey", "RMK") {
-        admin = msg.sender;
+        admins[msg.sender] = true;
     }
 
     /**
-     * Ensure the caller is owner of this contract
+     * Ensure the caller is admin of this contract
      */
     modifier onlyAdmin() {
-        require(msg.sender == admin, "Only admin can call");
-        _;
-    }
-
-    /**
-     * Ensure the caller is the store contract associated with this contract
-     */
-    modifier onlyStore() {
-        require(msg.sender == store, "Only store contract can call");
+        require(admins[msg.sender] == true, "Caller is not admin");
         _;
     }
 
@@ -107,7 +99,7 @@ contract NFT is ERC721Enumerable {
      */
     function mint(address _to, uint32 _total, uint32 _remaining)
     external
-    onlyStore
+    onlyAdmin
     {
         uint32 id = uriMappingID(_total, _remaining);
         require(_uri != "", "No content representing the total and remaining");
@@ -189,7 +181,7 @@ contract NFT is ERC721Enumerable {
      */
     function redeem(uint256 _tokenId, uint32 _total, uint32 _remaining)
     external
-    onlyStore
+    onlyAdmin
     onlyExistingToken(_tokenId)
     {
         uint32 id = uriMappingID(_total, _remaining);
