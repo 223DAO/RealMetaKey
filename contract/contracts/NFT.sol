@@ -10,7 +10,7 @@ contract NFT is ERC721Enumerable {
     mapping(address => bool) public admins;
 
     mapping(uint256 => uint32) public total;
-    mapping(uint256 => uint32) public remain;
+    mapping(uint256 => uint32) public remaining;
 
     // Mapping from token total and remain to token uri
     mapping(uint64 => string) private uris;
@@ -79,7 +79,7 @@ contract NFT is ERC721Enumerable {
         super._safeMint(_to, _tokenId);
 
         total[_tokenId] = _total;
-        remain[_tokenId] = _remaining;
+        remaining[_tokenId] = _remaining;
     }
 
     function tokenURI(uint256 tokenId)
@@ -92,14 +92,25 @@ contract NFT is ERC721Enumerable {
         return uris[_tokenState(tokenId)];
     }
 
-    function setRemain(uint256 _tokenId, uint32 _remaining) public onlyAdmin {
-        remain[_tokenId] = _remaining;
+    function setRemaining(uint256 _tokenId, uint32 _remaining)
+        public
+        onlyAdmin
+    {
+        remaining[_tokenId] = _remaining;
+    }
+
+    function getTotal(uint256 _tokenId) public view returns (uint32) {
+        return total[_tokenId];
+    }
+
+    function getRemaining(uint256 _tokenId) public view returns (uint32) {
+        return remaining[_tokenId];
     }
 
     /**
      * Get all token ids of _owner
      */
-    function getTokenIds(address _owner)
+    function getTokenIdsByOwner(address _owner)
         external
         view
         returns (uint256[] memory)
@@ -119,14 +130,14 @@ contract NFT is ERC721Enumerable {
     }
 
     function _tokenState(uint256 tokenId) private view returns (uint64) {
-        return (uint32(total[tokenId]) << 16) | remain[tokenId];
+        return (uint32(total[tokenId]) << 16) | remaining[tokenId];
     }
 
-    function _state(uint32 total_, uint32 remain_)
+    function _state(uint32 total_, uint32 remaining_)
         private
         pure
         returns (uint64)
     {
-        return (uint64(total_) << 16) | uint64(remain_);
+        return (uint64(total_) << 16) | uint64(remaining_);
     }
 }
