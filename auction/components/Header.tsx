@@ -13,7 +13,7 @@ export const Header = () => {
         background-color: var(--white);
       `}>
         <NavLink passHref href="/">
-          <a>Auctions</a>
+          <a>Market</a>
         </NavLink>
         <NavLink passHref href="/list">
           <a>List</a>
