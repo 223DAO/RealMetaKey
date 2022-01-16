@@ -138,6 +138,6 @@ contract NFT is ERC721Enumerable {
         pure
         returns (uint64)
     {
-        return (uint64(total_) << 16) | uint64(remaining_);
+        return (uint64(total_) << 32) | uint64(remaining_);
     }
 }
