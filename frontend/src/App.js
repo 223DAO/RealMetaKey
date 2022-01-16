@@ -6,6 +6,7 @@ import Header  from "./components/header";
 import Home from './pages/home/home';
 import Granted from './pages/granted/granted';
 import Redeem from './pages/redeem/redeem';
+import Premium from "./pages/premium/premium";
 import './App.css';
 
 
@@ -20,6 +21,7 @@ function App() {
               <Route exact path="/home" element={<Home/>}></Route>
               <Route exact path="/grant" element={<Granted/>}></Route>
               <Route exact path="/redeem" element={<Redeem/>}></Route>
+              <Route exact path="/premium" element={<Premium/>}></Route>
             </Routes>
           </div>
       </div>

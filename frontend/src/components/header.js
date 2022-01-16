@@ -57,6 +57,10 @@ function Header() {
                     <span className="App__header-link">Redeem</span>
                     <div className="App__header-link-line"></div>
                 </NavLink>
+                <NavLink className={(navData) => (navData.isActive ? "App__header-link-active" : 'none')} className="App__header-link-wrapper" to="/premium">
+                    <span className="App__header-link">Premium</span>
+                    <div className="App__header-link-line"></div>
+                </NavLink>
             </div>
             <div className="App__header-login-button">
                 {
